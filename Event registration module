@@ -1,0 +1,309 @@
+<template>
+  <div class="activity-registration">
+    <!-- Activity Details Page -->
+    <div v-if="view === 'detail'">
+      <h2>{{ activity.title }}</h2>
+      <p>{{ activity.description }}</p>
+      <div class="activity-info">
+        <p>Time: {{ formatDate(activity.startTime) }} - {{ formatDate(activity.endTime) }}</p>
+        <p>Location: {{ activity.location }}</p>
+        <p>Registered: {{ activity.currentParticipants }} / {{ activity.maxParticipants || 'No limit' }}</p>
+        <p v-if="activity.needPayment">Fee: ¥{{ activity.fee }}</p>
+      </div>
+      
+      <button 
+        @click="handleRegistration" 
+        :disabled="!isEligible || registrationStatus !== 'none'"
+        class="registration-btn"
+      >
+        {{ buttonText }}
+      </button>
+      
+      <div v-if="!isEligible && eligibilityCheck" class="warning">
+        {{ eligibilityCheck.reason }}
+      </div>
+    </div>
+
+    <!-- Registration Form -->
+    <div v-if="view === 'form'" class="registration-form">
+      <h3>Event Registration</h3>
+      <div class="form-notice">
+        <h4>Registration Instructions</h4>
+        <p>Please fill in the following information carefully. You can modify it before the review process after submission.</p>
+      </div>
+      
+      <form @submit.prevent="submitRegistration">
+        <div class="form-group">
+          <label>Name *</label>
+          <input type="text" v-model="formData.studentName" required>
+        </div>
+        
+        <div class="form-group">
+          <label>StudentID *</label>
+          <input type="text" v-model="formData.studentId" required>
+        </div>
+        
+        <div class="form-group">
+          <label>Phone Number *</label>
+          <input type="tel" v-model="formData.phone" required>
+        </div>
+        
+        <!-- Dynamically custom fields -->
+        <div v-for="field in formFields" :key="field.fieldName" class="form-group">
+          <label>
+            {{ field.fieldLabel }}
+            <span v-if="field.required">*</span>
+          </label>
+          
+          <input 
+            v-if="field.fieldType === 'text' || field.fieldType === 'number'"
+            :type="field.fieldType" 
+            v-model="formData.customData[field.fieldName]"
+            :required="field.required"
+          >
+          
+          <select 
+            v-else-if="field.fieldType === 'select'"
+            v-model="formData.customData[field.fieldName]"
+            :required="field.required"
+          >
+            <option value="">Please select</option>
+            <option v-for="option in field.options" :key="option" :value="option">
+              {{ option }}
+            </option>
+          </select>
+        </div>
+        
+        <div class="form-actions">
+          <button type="button" @click="view = 'detail'">Return</button>
+          <button type="submit">Submit registration</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Success message -->
+    <div v-if="view === 'success'" class="success-view">
+      <h3>Registration successful！</h3>
+      <p>Your application has been submitted, and you can check the review status in your personal center.</p>
+      <button @click="backToActivity">Return to event details</button>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'ActivityRegistration',
+  props: {
+    activityId: {
+      type: Number,
+      required: true
+    },
+    userId: {
+      type: Number,
+      required: true
+    }
+  },
+  data() {
+    return {
+      view: 'detail', // detail, form, success
+      activity: {},
+      formFields: [],
+      formData: {
+        studentName: '',
+        studentId: '',
+        phone: '',
+        customData: {}
+      },
+      eligibilityCheck: null,
+      registrationStatus: 'none', // none, pending, approved, cancelled
+      currentRegistrationId: null
+    }
+  },
+  computed: {
+    isEligible() {
+      return this.eligibilityCheck?.eligible || false
+    },
+    buttonText() {
+      switch (this.registrationStatus) {
+        case 'pending': return 'Registered'
+        case 'approved': return 'Registration successful'
+        case 'cancelled': return 'Cancelled'
+        default: return 'Register now'
+      }
+    }
+  },
+  async mounted() {
+    await this.loadActivityData()
+    await this.checkEligibility()
+    await this.checkRegistrationStatus()
+  },
+  methods: {
+    async loadActivityData() {
+      try {
+        const response = await fetch(`/api/activities/${this.activityId}/registration-form`)
+        const data = await response.json()
+        this.activity = data.activity
+        this.formFields = data.formFields
+        
+        // Initialize custom field data
+        this.formFields.forEach(field => {
+          this.$set(this.formData.customData, field.fieldName, '')
+        })
+      } catch (error) {
+        console.error('Failed to load activity data:', error)
+      }
+    },
+    
+    async checkEligibility() {
+      try {
+        const response = await fetch(`/api/activities/${this.activityId}/check-eligibility?userId=${this.userId}`)
+        this.eligibilityCheck = await response.json()
+      } catch (error) {
+        console.error('Registration eligibility check failed:', error)
+      }
+    },
+    
+    async checkRegistrationStatus() {
+      // Check if the user has registered
+      // Implement the logic for querying user registration status
+    },
+    
+    handleRegistration() {
+      if (this.registrationStatus === 'none') {
+        this.view = 'form'
+      } else {
+        // Display registration details or edit interface
+        this.view = 'form'
+        this.loadRegistrationData()
+      }
+    },
+    
+    async loadRegistrationData() {
+      // Load the registered data into the form
+    },
+    
+    async submitRegistration() {
+      try {
+        const response = await fetch(`/api/activities/${this.activityId}/register`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            userId: this.userId,
+            ...this.formData
+          })
+        })
+        
+        const result = await response.json()
+        
+        if (result.success) {
+          this.currentRegistrationId = result.registrationId
+          
+          if (this.activity.needPayment) {
+            // Redirect to payment page
+            this.goToPayment(result.registrationId)
+          } else {
+            this.view = 'success'
+            this.registrationStatus = 'pending'
+          }
+        } else {
+          alert('Registration failed: ' + result.error)
+        }
+      } catch (error) {
+        console.error('Registration failed to submit:', error)
+        alert('Registration failed, please try again.')
+      }
+    },
+    
+    goToPayment(registrationId) {
+      // Logic for redirecting to the payment page
+      console.log('Redirected to the payment page, registration ID:', registrationId)
+    },
+    
+    backToActivity() {
+      this.view = 'detail'
+    },
+    
+    formatDate(dateString) {
+      return new Date(dateString).toLocaleString()
+    }
+  }
+}
+</script>
+
+<style scoped>
+.activity-registration {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.registration-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.registration-btn:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.warning {
+  color: #dc3545;
+  margin-top: 10px;
+}
+
+.registration-form {
+  text-align: left;
+}
+
+.form-notice {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.form-actions {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.form-actions button {
+  margin: 0 10px;
+  padding: 10px 20px;
+}
+
+.success-view {
+  text-align: center;
+  padding: 40px 0;
+}
+
+.success-view h3 {
+  color: #28a745;
+  margin-bottom: 15px;
+}
+</style>
