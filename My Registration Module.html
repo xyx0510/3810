@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的报名</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: #fff;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .status-filter {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+        
+        .status-btn {
+            padding: 8px 16px;
+            background-color: #f0f0f0;
+            border: none;
+            border-radius: 20px;
+            font-size: 14px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .status-btn.active {
+            background-color: #1890ff;
+            color: white;
+        }
+        
+        .registration-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .registration-item {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            gap: 15px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .registration-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .activity-cover {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        
+        .activity-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .activity-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .activity-meta {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .registration-status {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-pending {
+            background-color: #fff7e6;
+            color: #fa8c16;
+        }
+        
+        .status-approved {
+            background-color: #f6ffed;
+            color: #52c41a;
+        }
+        
+        .status-rejected {
+            background-color: #fff2f0;
+            color: #ff4d4f;
+        }
+        
+        .status-history {
+            background-color: #f0f0f0;
+            color: #666;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .btn {
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: #1890ff;
+            color: white;
+        }
+        
+        .btn-danger {
+            background-color: #ff4d4f;
+            color: white;
+        }
+        
+        .btn-default {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: #fff;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        .modal-header {
+            margin-bottom: 20px;
+            padding-right: 30px;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+        
+        .empty-state img {
+            width: 100px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .registration-item {
+                flex-direction: column;
+            }
+            
+            .activity-cover {
+                width: 100%;
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>我的报名</h1>
+            <div class="status-filter">
+                <button class="status-btn active" data-status="all">全部</button>
+                <button class="status-btn" data-status="pending">待审核</button>
+                <button class="status-btn" data-status="approved">已通过</button>
+                <button class="status-btn" data-status="rejected">已拒绝</button>
+                <button class="status-btn" data-status="history">历史</button>
+            </div>
+        </header>
+        
+        <main>
+            <div class="registration-list" id="registrationList">
+                <div class="loading">加载中...</div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- 报名详情模态框 -->
+    <div class="modal" id="detailModal">
+        <div class="modal-content">
+            <span class="modal-close" id="closeModal">&times;</span>
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">报名详情</h2>
+            </div>
+            <div id="modalBody">
+                <!-- 动态内容 -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // API基础URL
+        const API_BASE = '/api';
+        
+        // 全局状态
+        let currentStatus = 'all';
+        let currentPage = 1;
+        let isLoading = false;
+        
+        // DOM元素
+        const registrationList = document.getElementById('registrationList');
+        const statusButtons = document.querySelectorAll('.status-btn');
+        const detailModal = document.getElementById('detailModal');
+        const closeModal = document.getElementById('closeModal');
+        const modalBody = document.getElementById('modalBody');
+        const modalTitle = document.getElementById('modalTitle');
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            loadRegistrations();
+            
+            // 状态筛选事件
+            statusButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    statusButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentStatus = btn.dataset.status;
+                    currentPage = 1;
+                    loadRegistrations();
+                });
+            });
+            
+            // 关闭模态框
+            closeModal.addEventListener('click', () => {
+                detailModal.style.display = 'none';
+            });
+            
+            // 点击模态框外部关闭
+            detailModal.addEventListener('click', (e) => {
+                if (e.target === detailModal) {
+                    detailModal.style.display = 'none';
+                }
+            });
+            
+            // 下拉刷新和上拉加载
+            let startY = 0;
+            let currentY = 0;
+            
+            document.addEventListener('touchstart', (e) => {
+                startY = e.touches[0].pageY;
+            });
+            
+            document.addEventListener('touchmove', (e) => {
+                currentY = e.touches[0].pageY;
+            });
+            
+            document.addEventListener('touchend', () => {
+                const diff = currentY - startY;
+                
+                // 下拉刷新
+                if (diff > 50 && window.scrollY === 0) {
+                    currentPage = 1;
+                    loadRegistrations();
+                }
+                
+                // 上拉加载更多
+                if (diff < -50 && 
+                    window.innerHeight + window.scrollY >= document.body.offsetHeight - 50) {
+                    loadMoreRegistrations();
+                }
+            });
+        });
+        
+        // 加载报名列表
+        async function loadRegistrations() {
+            try {
+                registrationList.innerHTML = '<div class="loading">加载中...</div>';
+                
+                const response = await fetch(
+                    `${API_BASE}/user/registrations?status=${currentStatus}&page=${currentPage}`
+                );
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayRegistrations(result.data.registrations);
+                } else {
+                    registrationList.innerHTML = '<div class="empty-state">加载失败，请重试</div>';
+                }
+            } catch (error) {
+                console.error('加载报名列表失败:', error);
+                registrationList.innerHTML = '<div class="empty-state">网络错误，请检查连接</div>';
+            }
+        }
+        
+        // 加载更多报名
+        async function loadMoreRegistrations() {
+            if (isLoading) return;
+            
+            isLoading = true;
+            currentPage++;
+            
+            try {
+                const response = await fetch(
+                    `${API_BASE}/user/registrations?status=${currentStatus}&page=${currentPage}`
+                );
+                const result = await response.json();
+                
+                if (result.success) {
+                    const existingItems = registrationList.querySelectorAll('.registration-item');
+                    const newItems = createRegistrationElements(result.data.registrations);
+                    
+                    // 移除加载提示
+                    const loadingIndicator = registrationList.querySelector('.loading-more');
+                    if (loadingIndicator) {
+                        loadingIndicator.remove();
+                    }
+                    
+                    // 添加新项目
+                    newItems.forEach(item => registrationList.appendChild(item));
+                    
+                    // 如果没有更多数据，显示提示
+                    if (result.data.registrations.length === 0) {
+                        registrationList.innerHTML += '<div class="empty-state">没有更多数据了</div>';
+                    }
+                }
+            } catch (error) {
+                console.error('加载更多报名失败:', error);
+                currentPage--; // 恢复页码
+            } finally {
+                isLoading = false;
+            }
+        }
+        
+        // 显示报名列表
+        function displayRegistrations(registrations) {
+            if (registrations.length === 0) {
+                registrationList.innerHTML = `
+                    <div class="empty-state">
+                        <img src="data:image" alt="空状态">
+                        <p>暂无报名记录</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            registrationList.innerHTML = '';
+            const elements = createRegistrationElements(registrations);
+            elements.forEach(element => registrationList.appendChild(element));
+        }
+        
+        // 创建报名列表元素
+        function createRegistrationElements(registrations) {
+            return registrations.map(registration => {
+                const item = document.createElement('div');
+                item.className = 'registration-item';
+                item.dataset.id = registration.id;
+                
+                // 状态文本和类名
+                let statusText = '';
+                let statusClass = '';
+                
+                switch(registration.status) {
+                    case 'pending':
+                        statusText = '待审核';
+                        statusClass = 'status-pending';
+                        break;
+                    case 'approved':
+                        statusText = '已通过';
+                        statusClass = 'status-approved';
+                        break;
+                    case 'rejected':
+                        statusText = '已拒绝';
+                        statusClass = 'status-rejected';
+                        break;
+                    case 'history':
+                        statusText = '已结束';
+                        statusClass = 'status-history';
+                        break;
+                }
+                
+                // 格式化时间
+                const activityTime = new Date(registration.activityTime).toLocaleString();
+                
+                item.innerHTML = `
+                    <img src="${registration.activityCover}" alt="${registration.activityTitle}" class="activity-cover">
+                    <div class="activity-info">
+                        <div>
+                            <div class="activity-title">${registration.activityTitle}</div>
+                            <div class="activity-meta">活动时间: ${activityTime}</div>
+                            <div class="activity-meta">地点: ${registration.location}</div>
+                        </div>
+                        <div>
+                            <span class="registration-status ${statusClass}">${statusText}</span>
+                            <div class="action-buttons">
+                                ${registration.status === 'pending' ? 
+                                    `<button class="btn btn-default" onclick="editRegistration(${registration.id})">修改</button>
+                                     <button class="btn btn-danger" onclick="cancelRegistration(${registration.id})">取消</button>` : 
+                                    ''}
+                                ${registration.status === 'approved' ? 
+                                    `<button class="btn btn-primary" onclick="toggleReminder(${registration.id}, ${!registration.reminderSet})">
+                                        ${registration.reminderSet ? '取消提醒' : '设置提醒'}
+                                    </button>` : 
+                                    ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // 点击查看详情
+                item.addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('btn')) {
+                        showRegistrationDetail(registration.id);
+                    }
+                });
+                
+                return item;
+            });
+        }
+        
+        // 显示报名详情
+        async function showRegistrationDetail(id) {
+            try {
+                const response = await fetch(`${API_BASE}/registrations/${id}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    const registration = result.data;
+                    
+                    // 格式化时间
+                    const applyTime = new Date(registration.applyTime).toLocaleString();
+                    const auditTime = registration.auditTime ? 
+                        new Date(registration.auditTime).toLocaleString() : '未审核';
+                    const activityTime = new Date(registration.activityTime).toLocaleString();
+                    
+                    // 状态文本
+                    let statusText = '';
+                    switch(registration.status) {
+                        case 'pending': statusText = '待审核'; break;
+                        case 'approved': statusText = '已通过'; break;
+                        case 'rejected': statusText = '已拒绝'; break;
+                        case 'history': statusText = '已结束'; break;
+                    }
+                    
+                    modalTitle.textContent = registration.activityTitle;
+                    modalBody.innerHTML = `
+                        <div style="margin-bottom: 20px;">
+                            <img src="${registration.activityCover}" alt="${registration.activityTitle}" style="width: 100%; border-radius: 8px;">
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="form-label">活动信息</div>
+                            <div>时间: ${activityTime}</div>
+                            <div>地点: ${registration.location}</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="form-label">报名状态</div>
+                            <span class="registration-status status-${registration.status}">${statusText}</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="form-label">报名时间</div>
+                            <div>${applyTime}</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="form-label">审核时间</div>
+                            <div>${auditTime}</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="form-label">报名信息</div>
+                            <div>姓名: ${registration.formData.name}</div>
+                            <div>电话: ${registration.formData.phone}</div>
+                            <div>邮箱: ${registration.formData.email}</div>
+                            <div>公司: ${registration.formData.company}</div>
+                            <div>职位: ${registration.formData.position}</div>
+                        </div>
+                        
+                        ${registration.status === 'pending' ? 
+                            `<div class="action-buttons">
+                                <button class="btn btn-primary" onclick="editRegistration(${registration.id})">修改报名信息</button>
+                                <button class="btn btn-danger" onclick="cancelRegistration(${registration.id})">取消报名</button>
+                            </div>` : 
+                            ''}
+                        
+                        ${registration.status === 'approved' ? 
+                            `<div class="action-buttons">
+                                <button class="btn btn-primary" onclick="toggleReminder(${registration.id}, ${!registration.reminderSet})">
+                                    ${registration.reminderSet ? '取消活动提醒' : '设置活动提醒'}
+                                </button>
+                            </div>` : 
+                            ''}
+                    `;
+                    
+                    detailModal.style.display = 'flex';
+                }
+            } catch (error) {
+                console.error('获取报名详情失败:', error);
+                alert('获取详情失败，请重试');
+            }
+        }
+        
+        // 修改报名信息
+        async function editRegistration(id) {
+            try {
+                const response = await fetch(`${API_BASE}/registrations/${id}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    const registration = result.data;
+                    
+                    modalTitle.textContent = '修改报名信息';
+                    modalBody.innerHTML = `
+                        <form id="editForm">
+                            <div class="form-group">
+                                <label class="form-label">姓名</label>
+                                <input type="text" class="form-control" name="name" value="${registration.formData.name}" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">电话</label>
+                                <input type="tel" class="form-control" name="phone" value="${registration.formData.phone}" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">邮箱</label>
+                                <input type="email" class="form-control" name="email" value="${registration.formData.email}" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">公司</label>
+                                <input type="text" class="form-control" name="company" value="${registration.formData.company}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">职位</label>
+                                <input type="text" class="form-control" name="position" value="${registration.formData.position}">
+                            </div>
+                            
+                            <div class="action-buttons">
+                                <button type="submit" class="btn btn-primary">保存修改</button>
+                                <button type="button" class="btn btn-default" onclick="detailModal.style.display='none'">取消</button>
+                            </div>
+                        </form>
+                    `;
+                    
+                    document.getElementById('editForm').addEventListener('submit', async (e) => {
+                        e.preventDefault();
+                        
+                        const formData = new FormData(e.target);
+                        const data = {
+                            formData: {
+                                name: formData.get('name'),
+                                phone: formData.get('phone'),
+                                email: formData.get('email'),
+                                company: formData.get('company'),
+                                position: formData.get('position')
+                            }
+                        };
+                        
+                        try {
+                            const updateResponse = await fetch(`${API_BASE}/registrations/${id}`, {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(data)
+                            });
+                            
+                            const updateResult = await updateResponse.json();
+                            
+                            if (updateResult.success) {
+                                alert('报名信息已更新');
+                                detailModal.style.display = 'none';
+                                loadRegistrations();
+                            } else {
+                                alert('更新失败: ' + updateResult.message);
+                            }
+                        } catch (error) {
+                            console.error('更新报名信息失败:', error);
+                            alert('更新失败，请重试');
+                        }
+                    });
+                    
+                    detailModal.style.display = 'flex';
+                }
+            } catch (error) {
+                console.error('获取报名信息失败:', error);
+                alert('获取信息失败，请重试');
+            }
+        }
+        
+        // 取消报名
+        async function cancelRegistration(id) {
+            if (!confirm('确定要取消报名吗？此操作不可撤销。')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/registrations/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('报名已取消');
+                    detailModal.style.display = 'none';
+                    loadRegistrations();
+                } else {
+                    alert('取消失败: ' + result.message);
+                }
+            } catch (error) {
+                console.error('取消报名失败:', error);
+                alert('取消失败，请重试');
+            }
+        }
+        
+        // 设置/取消活动提醒
+        async function toggleReminder(id, setReminder) {
+            try {
+                const response = await fetch(`${API_BASE}/registrations/${id}/reminder`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        reminderSet: setReminder
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(result.message);
+                    detailModal.style.display = 'none';
+                    loadRegistrations();
+                } else {
+                    alert('操作失败: ' + result.message);
+                }
+            } catch (error) {
+                console.error('设置提醒失败:', error);
+                alert('操作失败，请重试');
+            }
+        }
+    </script>
+</body>
+</html>
