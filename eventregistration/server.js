@@ -17,39 +17,59 @@ let activities = {
     id: 1,
     name: 'Tech Conference 2024',
     description: 'Annual technology conference featuring industry leaders and cutting-edge innovations.',
+    date: '2024-06-15',
+    time: '09:00',
+    location: 'Convention Center',
     registrationForm: {
       fields: ['name', 'studentId', 'phone', 'email'],
       requirements: 'Please provide accurate information. Student ID verification required.',
       feeRequired: true,
       feeAmount: 50
-    }
+    },
+    checkinCode: 'TECH2024',
+    qrCode: 'tech-conf-2024-qr'
   },
   2: {
     id: 2,
     name: 'Coding Workshop',
     description: 'Hands-on programming workshop for beginners. Learn HTML, CSS, and JavaScript basics.',
+    date: '2024-06-20',
+    time: '14:00',
+    location: 'Computer Lab B',
     registrationForm: {
       fields: ['name', 'studentId', 'phone', 'email'],
       requirements: 'Basic computer knowledge required. Bring your own laptop.',
       feeRequired: false,
       feeAmount: 0
-    }
+    },
+    checkinCode: 'CODE123',
+    qrCode: 'coding-workshop-qr'
   },
   3: {
     id: 3,
     name: 'AI Seminar',
     description: 'Explore the latest developments in artificial intelligence and machine learning.',
+    date: '2024-06-25',
+    time: '10:30',
+    location: 'Auditorium A',
     registrationForm: {
       fields: ['name', 'studentId', 'phone', 'email'],
       requirements: 'Interest in AI and ML technologies.',
       feeRequired: true,
       feeAmount: 25
-    }
+    },
+    checkinCode: 'AISEM',
+    qrCode: 'ai-seminar-qr'
   }
 };
 
 let registrations = [];
 let registrationIdCounter = 1;
+
+let checkins = [];
+let checkinIdCounter = 1;
+
+let reminders = [];
 
 // Utility functions
 const findRegistrationById = (id) => {
@@ -62,6 +82,12 @@ const findRegistrationByActivityAndStudent = (activityId, studentId) => {
   );
 };
 
+const findCheckinByActivityAndStudent = (activityId, studentId) => {
+  return checkins.find(checkin => 
+    checkin.activityId === parseInt(activityId) && checkin.studentId === studentId
+  );
+};
+
 // Serve home page
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -70,6 +96,16 @@ app.get('/', (req, res) => {
 // Serve payment page
 app.get('/payment', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'payment.html'));
+});
+
+// Serve my registrations page
+app.get('/my-registrations', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'my-registrations.html'));
+});
+
+// Serve checkin page
+app.get('/checkin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'checkin.html'));
 });
 
 // Process payment
@@ -281,7 +317,7 @@ app.delete('/api/registrations/:id', (req, res) => {
     });
   }
 
-  registrations.splice(registrationIndex, 1);
+  registration.status = 'cancelled';
 
   res.json({ 
     success: true, 
@@ -308,6 +344,434 @@ app.get('/api/registrations/student/:studentId', (req, res) => {
   });
 });
 
+// ========== 我的报名模块 API ==========
+
+// Get my registrations with filtering and pagination
+app.get('/api/user/registrations', (req, res) => {
+  const { studentId, status, page = 1, limit = 10 } = req.query;
+  
+  if (!studentId) {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'Student ID is required' 
+    });
+  }
+  
+  let filteredRegistrations = registrations.filter(reg => reg.studentId === studentId);
+  
+  // Filter by status
+  if (status && status !== 'all') {
+    if (status === 'history') {
+      // History: past events or cancelled registrations
+      const currentDate = new Date();
+      filteredRegistrations = filteredRegistrations.filter(reg => {
+        const activity = activities[reg.activityId];
+        if (!activity) return false;
+        
+        const eventDate = new Date(activity.date);
+        return eventDate < currentDate || reg.status === 'cancelled';
+      });
+    } else {
+      filteredRegistrations = filteredRegistrations.filter(reg => reg.status === status);
+    }
+  }
+  
+  // Sort by registration date (newest first)
+  filteredRegistrations.sort((a, b) => new Date(b.registrationDate) - new Date(a.registrationDate));
+  
+  // Pagination
+  const startIndex = (page - 1) * limit;
+  const endIndex = startIndex + parseInt(limit);
+  const paginatedRegistrations = filteredRegistrations.slice(startIndex, endIndex);
+  
+  // Enrich with activity data
+  const enrichedRegistrations = paginatedRegistrations.map(reg => {
+    const activity = activities[reg.activityId] || {};
+    const checkin = findCheckinByActivityAndStudent(reg.activityId, reg.studentId);
+    
+    return {
+      ...reg,
+      activity: {
+        id: activity.id,
+        name: activity.name,
+        description: activity.description,
+        date: activity.date,
+        time: activity.time,
+        location: activity.location
+      },
+      checkin: checkin || null
+    };
+  });
+  
+  res.json({
+    success: true,
+    data: enrichedRegistrations,
+    pagination: {
+      page: parseInt(page),
+      limit: parseInt(limit),
+      total: filteredRegistrations.length,
+      totalPages: Math.ceil(filteredRegistrations.length / limit)
+    }
+  });
+});
+
+// Get registration details
+app.get('/api/registrations/:id', (req, res) => {
+  const registrationId = parseInt(req.params.id);
+  const registration = findRegistrationById(registrationId);
+  
+  if (!registration) {
+    return res.status(404).json({ 
+      success: false, 
+      message: 'Registration not found' 
+    });
+  }
+  
+  const activity = activities[registration.activityId] || {};
+  const checkin = findCheckinByActivityAndStudent(registration.activityId, registration.studentId);
+  
+  const enrichedRegistration = {
+    ...registration,
+    activity: {
+      id: activity.id,
+      name: activity.name,
+      description: activity.description,
+      date: activity.date,
+      time: activity.time,
+      location: activity.location,
+      checkinCode: activity.checkinCode,
+      qrCode: activity.qrCode
+    },
+    checkin: checkin || null
+  };
+  
+  res.json({ 
+    success: true, 
+    data: enrichedRegistration 
+  });
+});
+
+// Get activity reminder settings
+app.get('/api/registrations/:id/reminder', (req, res) => {
+  const registrationId = parseInt(req.params.id);
+  const registration = findRegistrationById(registrationId);
+  
+  if (!registration) {
+    return res.status(404).json({ 
+      success: false, 
+      message: 'Registration not found' 
+    });
+  }
+  
+  // Find reminder for this registration
+  const reminder = reminders.find(r => r.registrationId === registrationId);
+  
+  res.json({ 
+    success: true, 
+    data: reminder || { 
+      enabled: false,
+      notifyBefore: 24 // hours
+    }
+  });
+});
+
+// Set activity reminder
+app.post('/api/registrations/:id/reminder', (req, res) => {
+  const registrationId = parseInt(req.params.id);
+  const { enabled, notifyBefore } = req.body;
+  
+  const registration = findRegistrationById(registrationId);
+  if (!registration) {
+    return res.status(404).json({ 
+      success: false, 
+      message: 'Registration not found' 
+    });
+  }
+  
+  // Find existing reminder or create new
+  let reminderIndex = reminders.findIndex(r => r.registrationId === registrationId);
+  
+  if (reminderIndex === -1) {
+    reminders.push({
+      registrationId,
+      enabled: enabled !== undefined ? enabled : true,
+      notifyBefore: notifyBefore || 24
+    });
+  } else {
+    reminders[reminderIndex] = {
+      ...reminders[reminderIndex],
+      enabled: enabled !== undefined ? enabled : reminders[reminderIndex].enabled,
+      notifyBefore: notifyBefore || reminders[reminderIndex].notifyBefore
+    };
+  }
+  
+  res.json({ 
+    success: true, 
+    message: 'Reminder settings updated successfully',
+    data: reminders.find(r => r.registrationId === registrationId)
+  });
+});
+
+// ========== 签到模块 API ==========
+
+// QR code checkin
+app.post('/api/checkin/qrcode', (req, res) => {
+  const { studentId, qrCode } = req.body;
+  
+  if (!studentId || !qrCode) {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'Student ID and QR code are required' 
+    });
+  }
+  
+  // Find activity by QR code
+  const activity = Object.values(activities).find(a => a.qrCode === qrCode);
+  if (!activity) {
+    return res.status(404).json({ 
+      success: false, 
+      message: 'Invalid QR code' 
+    });
+  }
+  
+  // Check if student is registered for this activity
+  const registration = findRegistrationByActivityAndStudent(activity.id, studentId);
+  if (!registration) {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'You are not registered for this activity' 
+    });
+  }
+  
+  if (registration.status !== 'approved') {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'Your registration is not approved yet' 
+    });
+  }
+  
+  // Check if already checked in
+  const existingCheckin = findCheckinByActivityAndStudent(activity.id, studentId);
+  if (existingCheckin) {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'You have already checked in for this activity' 
+    });
+  }
+  
+  // Create checkin record
+  const newCheckin = {
+    id: checkinIdCounter++,
+    activityId: activity.id,
+    studentId,
+    checkinTime: new Date().toISOString(),
+    method: 'qr',
+    status: 'checked-in'
+  };
+  
+  checkins.push(newCheckin);
+  
+  res.json({
+    success: true,
+    message: 'Check-in successful!',
+    data: newCheckin
+  });
+});
+
+// Checkin code checkin
+app.post('/api/checkin/code', (req, res) => {
+  const { studentId, activityId, checkinCode } = req.body;
+  
+  if (!studentId || !activityId || !checkinCode) {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'Student ID, Activity ID and check-in code are required' 
+    });
+  }
+  
+  const activity = activities[activityId];
+  if (!activity) {
+    return res.status(404).json({ 
+      success: false, 
+      message: 'Activity not found' 
+    });
+  }
+  
+  // Verify checkin code
+  if (activity.checkinCode !== checkinCode) {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'Invalid check-in code' 
+    });
+  }
+  
+  // Check if student is registered for this activity
+  const registration = findRegistrationByActivityAndStudent(activityId, studentId);
+  if (!registration) {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'You are not registered for this activity' 
+    });
+  }
+  
+  if (registration.status !== 'approved') {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'Your registration is not approved yet' 
+    });
+  }
+  
+  // Check if already checked in
+  const existingCheckin = findCheckinByActivityAndStudent(activityId, studentId);
+  if (existingCheckin) {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'You have already checked in for this activity' 
+    });
+  }
+  
+  // Create checkin record
+  const newCheckin = {
+    id: checkinIdCounter++,
+    activityId: parseInt(activityId),
+    studentId,
+    checkinTime: new Date().toISOString(),
+    method: 'code',
+    status: 'checked-in'
+  };
+  
+  checkins.push(newCheckin);
+  
+  res.json({
+    success: true,
+    message: 'Check-in successful!',
+    data: newCheckin
+  });
+});
+
+// Get checkin status for an activity
+app.get('/api/activities/:id/checkin-status', (req, res) => {
+  const activityId = parseInt(req.params.id);
+  const { studentId } = req.query;
+  
+  if (!studentId) {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'Student ID is required' 
+    });
+  }
+  
+  const activity = activities[activityId];
+  if (!activity) {
+    return res.status(404).json({ 
+      success: false, 
+      message: 'Activity not found' 
+    });
+  }
+  
+  const checkin = findCheckinByActivityAndStudent(activityId, studentId);
+  
+  res.json({
+    success: true,
+    data: {
+      checkedIn: !!checkin,
+      checkinTime: checkin ? checkin.checkinTime : null,
+      method: checkin ? checkin.method : null
+    }
+  });
+});
+
+// Get user's checkin records
+app.get('/api/user/checkins', (req, res) => {
+  const { studentId } = req.query;
+  
+  if (!studentId) {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'Student ID is required' 
+    });
+  }
+  
+  const userCheckins = checkins.filter(checkin => checkin.studentId === studentId);
+  
+  // Enrich with activity data
+  const enrichedCheckins = userCheckins.map(checkin => {
+    const activity = activities[checkin.activityId] || {};
+    return {
+      ...checkin,
+      activity: {
+        id: activity.id,
+        name: activity.name,
+        date: activity.date,
+        time: activity.time,
+        location: activity.location
+      }
+    };
+  });
+  
+  res.json({
+    success: true,
+    data: enrichedCheckins
+  });
+});
+
+// Apply for makeup checkin
+app.post('/api/checkin/makeup', (req, res) => {
+  const { studentId, activityId, reason } = req.body;
+  
+  if (!studentId || !activityId || !reason) {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'Student ID, Activity ID and reason are required' 
+    });
+  }
+  
+  const activity = activities[activityId];
+  if (!activity) {
+    return res.status(404).json({ 
+      success: false, 
+      message: 'Activity not found' 
+    });
+  }
+  
+  // Check if student is registered for this activity
+  const registration = findRegistrationByActivityAndStudent(activityId, studentId);
+  if (!registration) {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'You are not registered for this activity' 
+    });
+  }
+  
+  // Check if already checked in
+  const existingCheckin = findCheckinByActivityAndStudent(activityId, studentId);
+  if (existingCheckin) {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'You have already checked in for this activity' 
+    });
+  }
+  
+  // Create makeup checkin request
+  const makeupCheckin = {
+    id: checkinIdCounter++,
+    activityId: parseInt(activityId),
+    studentId,
+    reason,
+    requestTime: new Date().toISOString(),
+    status: 'pending',
+    type: 'makeup'
+  };
+  
+  checkins.push(makeupCheckin);
+  
+  res.json({
+    success: true,
+    message: 'Makeup check-in request submitted successfully',
+    data: makeupCheckin
+  });
+});
+
 // Handle undefined routes
 app.use('*', (req, res) => {
   res.status(404).json({ 
@@ -321,4 +785,6 @@ app.listen(PORT, () => {
   console.log(`Activity Registration Server running on port ${PORT}`);
   console.log(`Access the application at: http://localhost:${PORT}`);
   console.log(`Payment page: http://localhost:${PORT}/payment`);
+  console.log(`My Registrations: http://localhost:${PORT}/my-registrations`);
+  console.log(`Check-in Page: http://localhost:${PORT}/checkin`);
 });
