@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const path = require('path');
 
 const app = express();
 const PORT = 8099;
@@ -50,6 +51,16 @@ const findRegistrationByActivityAndStudent = (activityId, studentId) => {
     reg.activityId === parseInt(activityId) && reg.studentId === studentId
   );
 };
+
+// Serve login page
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+// Serve home page
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 // Get registration form for activity
 app.get('/api/activities/:id/registration-form', (req, res) => {
@@ -235,8 +246,17 @@ app.get('/api/activities/:id', (req, res) => {
   });
 });
 
+// Handle undefined routes - return 404
+app.use('*', (req, res) => {
+  res.status(404).json({
+    success: false,
+    message: 'Route not found'
+  });
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Activity Registration Server running on port ${PORT}`);
   console.log(`Access the application at: http://localhost:${PORT}`);
+  console.log(`Login page: http://localhost:${PORT}/login`);
 });
