@@ -371,8 +371,45 @@
         // Load activities from API
         async function loadActivities() {
             try {
-                // In a real app, we would fetch from API
-                // For demo, we'll use the server's sample data
+                // Fetch activities from API
+                const response = await fetch('/api/activities/1'); // Get first activity as example
+                const result = await response.json();
+                
+                if (result.success) {
+                    // In a real app, we would fetch all activities
+                    // For demo, we'll use sample data
+                    activities = [
+                        {
+                            id: 1,
+                            name: 'Tech Conference 2024',
+                            description: 'Join us for the annual technology conference featuring industry leaders and cutting-edge innovations.',
+                            registrationForm: {
+                                fields: ['name', 'studentId', 'phone', 'email'],
+                                requirements: 'Please provide accurate information. Student ID verification required.',
+                                feeRequired: true,
+                                feeAmount: 50
+                            }
+                        },
+                        {
+                            id: 2,
+                            name: 'Coding Workshop',
+                            description: 'Hands-on programming workshop for beginners. Learn HTML, CSS, and JavaScript basics.',
+                            registrationForm: {
+                                fields: ['name', 'studentId', 'phone', 'email'],
+                                requirements: 'Basic computer knowledge required. Bring your own laptop.',
+                                feeRequired: false,
+                                feeAmount: 0
+                            }
+                        }
+                    ];
+
+                    renderActivities();
+                } else {
+                    showAlert('Error loading activities', 'danger');
+                }
+            } catch (error) {
+                showAlert('Error loading activities: ' + error.message, 'danger');
+                // Fallback to sample data
                 activities = [
                     {
                         id: 1,
@@ -397,10 +434,7 @@
                         }
                     }
                 ];
-
                 renderActivities();
-            } catch (error) {
-                showAlert('Error loading activities: ' + error.message, 'danger');
             }
         }
 
