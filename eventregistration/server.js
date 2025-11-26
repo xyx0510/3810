@@ -67,6 +67,37 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// Serve payment page
+app.get('/payment', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'payment.html'));
+});
+
+// Process payment
+app.post('/api/payments/process', (req, res) => {
+  const { registrationId, paymentMethod } = req.body;
+  
+  const registration = findRegistrationById(registrationId);
+  if (!registration) {
+    return res.status(404).json({ 
+      success: false, 
+      message: 'Registration not found' 
+    });
+  }
+  
+  // Simulate payment processing
+  setTimeout(() => {
+    registration.paid = true;
+    registration.paymentDate = new Date().toISOString();
+    registration.paymentMethod = paymentMethod;
+    
+    res.json({ 
+      success: true, 
+      message: 'Payment processed successfully',
+      data: registration
+    });
+  }, 2000);
+});
+
 // Get all activities
 app.get('/api/activities', (req, res) => {
   const activitiesArray = Object.values(activities);
@@ -289,4 +320,5 @@ app.use('*', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Activity Registration Server running on port ${PORT}`);
   console.log(`Access the application at: http://localhost:${PORT}`);
+  console.log(`Payment page: http://localhost:${PORT}/payment`);
 });
