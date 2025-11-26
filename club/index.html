@@ -179,6 +179,7 @@
             border-radius: 10px;
             overflow: hidden;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
         }
         
         .activity-card:hover {
@@ -279,6 +280,129 @@
             border-radius: 10px;
         }
         
+        /* Activity Modal Styles */
+        .activity-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #666;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.8);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .close-btn:hover {
+            color: #333;
+            background: white;
+        }
+        
+        .modal-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+        
+        .modal-details {
+            padding: 25px;
+        }
+        
+        .modal-details h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        
+        .activity-info {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #666;
+        }
+        
+        .info-item i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        .activity-description h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .activity-description p {
+            line-height: 1.6;
+            color: #555;
+        }
+        
+        .activity-actions {
+            margin-top: 25px;
+            text-align: center;
+        }
+        
+        .join-btn {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .join-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.4);
+        }
+        
         @media (max-width: 768px) {
             .club-info {
                 flex-direction: column;
@@ -296,6 +420,14 @@
             
             .tabs {
                 flex-direction: column;
+            }
+            
+            .activities-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .members-list {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             }
         }
     </style>
@@ -483,9 +615,9 @@
                     </div>
                 `;
                 
-                // Add click event to navigate to activity detail
+                // Add click event to show activity detail modal
                 activityCard.addEventListener('click', () => {
-                    window.location.href = `/activity.html?id=${activity.id}`;
+                    showActivityDetail(activity);
                 });
                 
                 activitiesList.appendChild(activityCard);
@@ -572,6 +704,72 @@
             } else {
                 followBtn.innerHTML = '<i class="far fa-heart"></i> Follow';
                 followBtn.classList.remove('followed');
+            }
+        }
+        
+        // Show activity detail modal
+        async function showActivityDetail(activity) {
+            try {
+                // Get full activity details from API
+                const response = await fetch(`/api/activities/${activity.id}`);
+                const fullActivity = await response.json();
+                
+                // Create modal
+                const modal = document.createElement('div');
+                modal.className = 'activity-modal';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <span class="close-btn">&times;</span>
+                        <img src="${fullActivity.image}" alt="${fullActivity.title}" class="modal-image">
+                        <div class="modal-details">
+                            <h2>${fullActivity.title}</h2>
+                            <div class="activity-info">
+                                <div class="info-item">
+                                    <i class="far fa-calendar"></i>
+                                    <span>${fullActivity.date}</span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>${fullActivity.location}</span>
+                                </div>
+                            </div>
+                            <div class="activity-description">
+                                <h3>Activity Description</h3>
+                                <p>${fullActivity.description}</p>
+                            </div>
+                            <div class="activity-actions">
+                                <button class="join-btn">Join Activity</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Add modal to page
+                document.body.appendChild(modal);
+                
+                // Close button event
+                const closeBtn = modal.querySelector('.close-btn');
+                closeBtn.addEventListener('click', () => {
+                    document.body.removeChild(modal);
+                });
+                
+                // Click outside modal to close
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        document.body.removeChild(modal);
+                    }
+                });
+                
+                // Join activity button event
+                const joinBtn = modal.querySelector('.join-btn');
+                joinBtn.addEventListener('click', () => {
+                    alert('You have successfully joined this activity!');
+                    document.body.removeChild(modal);
+                });
+                
+            } catch (error) {
+                console.error('Failed to load activity details:', error);
+                alert('Failed to load activity details. Please try again.');
             }
         }
     </script>
