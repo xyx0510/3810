@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const QRCode = require('qrcode');
 
 const app = express();
-const PORT = process.env.PORT || 8099;
+const PORT = process.env.PORT || 3000;
 
 // 中间件
 app.use(cors());
