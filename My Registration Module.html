@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的报名</title>
+    <title>My registration</title>
     <style>
         * {
             margin: 0;
@@ -336,17 +336,17 @@
         <header>
             <h1>我的报名</h1>
             <div class="status-filter">
-                <button class="status-btn active" data-status="all">全部</button>
-                <button class="status-btn" data-status="pending">待审核</button>
-                <button class="status-btn" data-status="approved">已通过</button>
-                <button class="status-btn" data-status="rejected">已拒绝</button>
-                <button class="status-btn" data-status="history">历史</button>
+                <button class="status-btn active" data-status="all">All</button>
+                <button class="status-btn" data-status="pending">Pending review</button>
+                <button class="status-btn" data-status="approved">Passed</button>
+                <button class="status-btn" data-status="rejected">Rejected</button>
+                <button class="status-btn" data-status="history">history</button>
             </div>
         </header>
         
         <main>
             <div class="registration-list" id="registrationList">
-                <div class="loading">加载中...</div>
+                <div class="loading">loading...</div>
             </div>
         </main>
     </div>
@@ -356,7 +356,7 @@
         <div class="modal-content">
             <span class="modal-close" id="closeModal">&times;</span>
             <div class="modal-header">
-                <h2 class="modal-title" id="modalTitle">报名详情</h2>
+                <h2 class="modal-title" id="modalTitle">Registration details</h2>
             </div>
             <div id="modalBody">
                 <!-- 动态内容 -->
@@ -369,7 +369,7 @@
         <div class="modal-content">
             <span class="modal-close" id="closeCheckinModal">&times;</span>
             <div class="modal-header">
-                <h2 class="modal-title">活动签到</h2>
+                <h2 class="modal-title">Event check-in</h2>
             </div>
             <div id="checkinModalBody">
                 <!-- 动态内容 -->
@@ -382,7 +382,7 @@
         <div class="modal-content">
             <span class="modal-close" id="closeMakeupModal">&times;</span>
             <div class="modal-header">
-                <h2 class="modal-title">申请补签</h2>
+                <h2 class="modal-title">Apply for supplementary visa</h2>
             </div>
             <div id="makeupModalBody">
                 <!-- 动态内容 -->
@@ -495,7 +495,7 @@
         // 加载报名列表
         async function loadRegistrations() {
             try {
-                registrationList.innerHTML = '<div class="loading">加载中...</div>';
+                registrationList.innerHTML = '<div class="loading">loading...</div>';
                 
                 const response = await fetch(
                     `${API_BASE}/user/registrations?status=${currentStatus}&page=${currentPage}`
@@ -505,11 +505,11 @@
                 if (result.success) {
                     displayRegistrations(result.data.registrations);
                 } else {
-                    registrationList.innerHTML = '<div class="empty-state">加载失败，请重试</div>';
+                    registrationList.innerHTML = '<div class="empty-state">Loading failed, please try again.</div>';
                 }
             } catch (error) {
-                console.error('加载报名列表失败:', error);
-                registrationList.innerHTML = '<div class="empty-state">网络错误，请检查连接</div>';
+                console.error('Failed to load registration list:', error);
+                registrationList.innerHTML = '<div class="empty-state">Network error, please check your connection.</div>';
             }
         }
         
@@ -541,11 +541,11 @@
                     
                     // 如果没有更多数据，显示提示
                     if (result.data.registrations.length === 0) {
-                        registrationList.innerHTML += '<div class="empty-state">没有更多数据了</div>';
+                        registrationList.innerHTML += '<div class="empty-state">No more data available.</div>';
                     }
                 }
             } catch (error) {
-                console.error('加载更多报名失败:', error);
+                console.error('Load more registration failed:', error);
                 currentPage--; // 恢复页码
             } finally {
                 isLoading = false;
@@ -558,7 +558,7 @@
                 registrationList.innerHTML = `
                     <div class="empty-state">
                         <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQ0IDI0SDE2QzE0LjM0MzEgMjQgMTMgMjUuMzQzMSAxMyAyN1Y0NEMxMyA0NS42NTY5IDE0LjM0MzEgNDcgMTYgNDdINDhDNDkuNjU2OSA0NyA1MSA0NS42NTY5IDUxIDQ0VjI3QzUxIDI1LjM0MzEgNDkuNjU2OSAyNCA0OCAyNFoiIGZpbGw9IiNEOEQ4RDgiLz4KPHBhdGggZD0iTTM1LjUgMjRIMzQuNUMzMy42NzE2IDI0IDMzIDIzLjMyODQgMzMgMjIuNVYxOC41QzMzIDE2LjAxNDcgMzAuOTg1MyAxNCAyOC41IDE0QzI2LjAxNDcgMTQgMjQgMTYuMDE0NyAyNCAxOC41VjIyLjVDMjQgMjMuMzI4NCAyMy4zMjg0IDI0IDIyLjUgMjRIMjEuNUMxOS4wMTQ3IDI0IDE3IDI2LjAxNDcgMTcgMjguNVYzOS41QzE3IDQxLjk4NTMgMTkuMDE0NyA0NCAyMS41IDQ0SDM1LjVDMzcuOTg1MyA0NCA0MCA0MS45ODUzIDQwIDM5LjVWMjguNUM0MCAyNi4wMTQ3IDM3Ljk4NTMgMjQgMzUuNSAyNFoiIGZpbGw9IiNEOEQ4RDgiLz4KPC9zdmc+Cg==" alt="空状态">
-                        <p>暂无报名记录</p>
+                        <p>No registration records yet</p>
                     </div>
                 `;
                 return;
@@ -582,19 +582,19 @@
                 
                 switch(registration.status) {
                     case 'pending':
-                        statusText = '待审核';
+                        statusText = 'Pending review';
                         statusClass = 'status-pending';
                         break;
                     case 'approved':
-                        statusText = '已通过';
+                        statusText = 'Passed';
                         statusClass = 'status-approved';
                         break;
                     case 'rejected':
-                        statusText = '已拒绝';
+                        statusText = 'Rejected';
                         statusClass = 'status-rejected';
                         break;
                     case 'history':
-                        statusText = '已结束';
+                        statusText = 'ended';
                         statusClass = 'status-history';
                         break;
                 }
@@ -607,20 +607,20 @@
                     <div class="activity-info">
                         <div>
                             <div class="activity-title">${registration.activityTitle}</div>
-                            <div class="activity-meta">活动时间: ${activityTime}</div>
-                            <div class="activity-meta">地点: ${registration.location}</div>
+                            <div class="activity-meta">Activity time: ${activityTime}</div>
+                            <div class="activity-meta">Place: ${registration.location}</div>
                         </div>
                         <div>
                             <span class="registration-status ${statusClass}">${statusText}</span>
                             <div class="action-buttons">
                                 ${registration.status === 'pending' ? 
-                                    `<button class="btn btn-default" onclick="editRegistration(${registration.id})">修改</button>
-                                     <button class="btn btn-danger" onclick="cancelRegistration(${registration.id})">取消</button>` : 
+                                    `<button class="btn btn-default" onclick="editRegistration(${registration.id})">Revise</button>
+                                     <button class="btn btn-danger" onclick="cancelRegistration(${registration.id})">Cancel</button>` : 
                                     ''}
                                 ${registration.status === 'approved' ? 
-                                    `<button class="btn btn-primary" onclick="showCheckinOptions(${registration.activityId})">签到</button>
+                                    `<button class="btn btn-primary" onclick="showCheckinOptions(${registration.activityId})">Sign in</button>
                                      <button class="btn btn-primary" onclick="toggleReminder(${registration.id}, ${!registration.reminderSet})">
-                                        ${registration.reminderSet ? '取消提醒' : '设置提醒'}
+                                        ${registration.reminderSet ? 'Cancel reminder' : 'Set reminder'}
                                     </button>` : 
                                     ''}
                             </div>
@@ -660,11 +660,11 @@
                         
                         switch(checkinStatus.checkinStatus) {
                             case 'success':
-                                statusText = '已签到';
+                                statusText = 'Signed in';
                                 statusClass = 'status-success';
                                 break;
                             case 'not_checked_in':
-                                statusText = '未签到';
+                                statusText = 'Not signed in';
                                 statusClass = 'status-not_checked_in';
                                 break;
                             default:
@@ -676,23 +676,23 @@
                         
                         if (checkinStatus.checkinTime) {
                             const checkinTime = new Date(checkinStatus.checkinTime).toLocaleString();
-                            checkinStatusHtml += `<div class="activity-meta">签到时间: ${checkinTime}</div>`;
+                            checkinStatusHtml += `<div class="activity-meta">Check-in time: ${checkinTime}</div>`;
                         }
                     }
                     
                     // 格式化时间
                     const applyTime = new Date(registration.applyTime).toLocaleString();
                     const auditTime = registration.auditTime ? 
-                        new Date(registration.auditTime).toLocaleString() : '未审核';
+                        new Date(registration.auditTime).toLocaleString() : 'Not reviewed';
                     const activityTime = new Date(registration.activityTime).toLocaleString();
                     
                     // 状态文本
                     let statusText = '';
                     switch(registration.status) {
-                        case 'pending': statusText = '待审核'; break;
-                        case 'approved': statusText = '已通过'; break;
-                        case 'rejected': statusText = '已拒绝'; break;
-                        case 'history': statusText = '已结束'; break;
+                        case 'pending': statusText = 'Pending review'; break;
+                        case 'approved': statusText = 'Passed'; break;
+                        case 'rejected': statusText = 'Rejected'; break;
+                        case 'history': statusText = 'ended'; break;
                     }
                     
                     modalTitle.textContent = registration.activityTitle;
@@ -702,48 +702,46 @@
                         </div>
                         
                         <div class="form-group">
-                            <div class="form-label">活动信息</div>
-                            <div>时间: ${activityTime}</div>
-                            <div>地点: ${registration.location}</div>
+                            <div class="form-label">Event information</div>
+                            <div>Time: ${activityTime}</div>
+                            <div>Place: ${registration.location}</div>
                         </div>
                         
                         <div class="form-group">
-                            <div class="form-label">报名状态</div>
+                            <div class="form-label">Registration status</div>
                             <span class="registration-status status-${registration.status}">${statusText}</span>
                             ${checkinStatusHtml}
                         </div>
                         
                         <div class="form-group">
-                            <div class="form-label">报名时间</div>
+                            <div class="form-label">Registration time</div>
                             <div>${applyTime}</div>
                         </div>
                         
                         <div class="form-group">
-                            <div class="form-label">审核时间</div>
+                            <div class="form-label">review time</div>
                             <div>${auditTime}</div>
                         </div>
                         
                         <div class="form-group">
-                            <div class="form-label">报名信息</div>
-                            <div>姓名: ${registration.formData.name}</div>
-                            <div>电话: ${registration.formData.phone}</div>
-                            <div>邮箱: ${registration.formData.email}</div>
-                            <div>公司: ${registration.formData.company}</div>
-                            <div>职位: ${registration.formData.position}</div>
+                            <div class="form-label">Registration information</div>
+                            <div>Name: ${registration.formData.name}</div>
+                            <div>Telephone: ${registration.formData.phone}</div>
+                            <div>email: ${registration.formData.email}</div>
                         </div>
                         
                         <div class="action-buttons">
                             ${registration.status === 'pending' ? 
-                                `<button class="btn btn-primary" onclick="editRegistration(${registration.id})">修改报名信息</button>
-                                 <button class="btn btn-danger" onclick="cancelRegistration(${registration.id})">取消报名</button>` : 
+                                `<button class="btn btn-primary" onclick="editRegistration(${registration.id})">Modify registration information</button>
+                                 <button class="btn btn-danger" onclick="cancelRegistration(${registration.id})">Cancel registration</button>` : 
                                 ''}
                             
                             ${registration.status === 'approved' ? 
-                                `<button class="btn btn-success" onclick="showCheckinOptions(${registration.activityId})">签到</button>
+                                `<button class="btn btn-success" onclick="showCheckinOptions(${registration.activityId})">Sign in</button>
                                  <button class="btn btn-primary" onclick="toggleReminder(${registration.id}, ${!registration.reminderSet})">
-                                    ${registration.reminderSet ? '取消活动提醒' : '设置活动提醒'}
+                                    ${registration.reminderSet ? 'Cancel event reminder' : 'Set event reminders'}
                                  </button>
-                                 <button class="btn btn-warning" onclick="showMakeupApplication(${registration.activityId})">申请补签</button>` : 
+                                 <button class="btn btn-warning" onclick="showMakeupApplication(${registration.activityId})">Apply for supplementary visa</button>` : 
                                 ''}
                         </div>
                     `;
@@ -751,8 +749,8 @@
                     detailModal.style.display = 'flex';
                 }
             } catch (error) {
-                console.error('获取报名详情失败:', error);
-                alert('获取详情失败，请重试');
+                console.error('Failed to retrieve registration details:', error);
+                alert('Failed to retrieve details, please try again.');
             }
         }
         
@@ -769,33 +767,33 @@
                 if (qrCodeResult.success) {
                     qrCodeHtml = `
                         <div class="qrcode-container">
-                            <div class="form-label">扫描二维码签到</div>
-                            <img src="${qrCodeResult.data.qrCode}" alt="活动二维码" class="qrcode">
-                            <div style="margin-top: 10px; font-size: 14px; color: #666;">请使用手机扫描二维码完成签到</div>
+                            <div class="form-label">Scan the QR code to check in</div>
+                            <img src="${qrCodeResult.data.qrCode}" alt="Event QR code" class="qrcode">
+                            <div style="margin-top: 10px; font-size: 14px; color: #666;">Please scan the QR code with your mobile phone to check in.</div>
                         </div>
                     `;
                 }
                 
                 checkinModalBody.innerHTML = `
                     <div class="checkin-tabs">
-                        <div class="checkin-tab active" data-tab="qrcode">扫码签到</div>
-                        <div class="checkin-tab" data-tab="code">签到码签到</div>
+                        <div class="checkin-tab active" data-tab="qrcode">Scan QR code to check in</div>
+                        <div class="checkin-tab" data-tab="code">Sign-in code sign-in</div>
                     </div>
                     
                     <div class="checkin-content active" id="qrcodeContent">
                         ${qrCodeHtml}
                         <div class="action-buttons">
-                            <button class="btn btn-primary" onclick="simulateQRCodeCheckin(${activityId})">模拟扫码签到</button>
+                            <button class="btn btn-primary" onclick="simulateQRCodeCheckin(${activityId})">Simulated QR code check-in</button>
                         </div>
                     </div>
                     
                     <div class="checkin-content" id="codeContent">
                         <div class="form-group">
-                            <label class="form-label">请输入签到码</label>
-                            <input type="text" class="form-control" id="checkinCodeInput" placeholder="6位签到码">
+                            <label class="form-label">Please enter your check-in code.</label>
+                            <input type="text" class="form-control" id="checkinCodeInput" placeholder="6-digit check-in code">
                         </div>
                         <div class="action-buttons">
-                            <button class="btn btn-primary" onclick="checkinWithCode(${activityId})">确认签到</button>
+                            <button class="btn btn-primary" onclick="checkinWithCode(${activityId})">Confirm check-in</button>
                         </div>
                     </div>
                 `;
@@ -818,8 +816,8 @@
                 
                 checkinModal.style.display = 'flex';
             } catch (error) {
-                console.error('获取二维码失败:', error);
-                alert('获取签到信息失败，请重试');
+                console.error('Failed to obtain QR code:', error);
+                alert('Failed to retrieve check-in information, please try again.');
             }
         }
         
@@ -831,7 +829,7 @@
                 const activityResult = await activityResponse.json();
                 
                 if (!activityResult.success) {
-                    alert('获取活动信息失败');
+                    alert('Failed to retrieve event information');
                     return;
                 }
                 
@@ -850,16 +848,16 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    alert('签到成功！');
+                    alert('Sign in successfully！');
                     checkinModal.style.display = 'none';
                     detailModal.style.display = 'none';
                     loadRegistrations();
                 } else {
-                    alert('签到失败: ' + result.message);
+                    alert('Sign in failed: ' + result.message);
                 }
             } catch (error) {
-                console.error('扫码签到失败:', error);
-                alert('签到失败，请重试');
+                console.error('QR code check-in failed:', error);
+                alert('Check-in failed, please try again.');
             }
         }
         
@@ -868,7 +866,7 @@
             const checkinCode = document.getElementById('checkinCodeInput').value.trim();
             
             if (!checkinCode) {
-                alert('请输入签到码');
+                alert('Please enter your check-in code.');
                 return;
             }
             
@@ -887,16 +885,16 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    alert('签到成功！');
+                    alert('Sign in successfully！');
                     checkinModal.style.display = 'none';
                     detailModal.style.display = 'none';
                     loadRegistrations();
                 } else {
-                    alert('签到失败: ' + result.message);
+                    alert('Sign in failed: ' + result.message);
                 }
             } catch (error) {
-                console.error('签到码签到失败:', error);
-                alert('签到失败，请重试');
+                console.error('Sign-in failed:', error);
+                alert('Check-in failed, please try again.');
             }
         }
         
@@ -906,12 +904,12 @@
             
             makeupModalBody.innerHTML = `
                 <div class="form-group">
-                    <label class="form-label">补签原因</label>
-                    <textarea class="form-control" id="makeupReason" rows="4" placeholder="请说明需要补签的原因"></textarea>
+                    <label class="form-label">Reason for re-signing</label>
+                    <textarea class="form-control" id="makeupReason" rows="4" placeholder="Please explain why a supplementary signature is required."></textarea>
                 </div>
                 <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="submitMakeupApplication(${activityId})">提交申请</button>
-                    <button class="btn btn-default" onclick="makeupModal.style.display='none'">取消</button>
+                    <button class="btn btn-primary" onclick="submitMakeupApplication(${activityId})">Submit application</button>
+                    <button class="btn btn-default" onclick="makeupModal.style.display='none'">Cancel</button>
                 </div>
             `;
             
@@ -923,7 +921,7 @@
             const reason = document.getElementById('makeupReason').value.trim();
             
             if (!reason) {
-                alert('请输入补签原因');
+                alert('Please enter the reason for the re-signing.');
                 return;
             }
             
@@ -942,15 +940,15 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    alert('补签申请已提交，请等待审核');
+                    alert('The application for supplementary visa processing has been submitted; please wait for review.');
                     makeupModal.style.display = 'none';
                     detailModal.style.display = 'none';
                 } else {
-                    alert('提交失败: ' + result.message);
+                    alert('Submission failed: ' + result.message);
                 }
             } catch (error) {
-                console.error('提交补签申请失败:', error);
-                alert('提交失败，请重试');
+                console.error('Application for visa resubmission failed:', error);
+                alert('Submission failed, please try again.');
             }
         }
         
@@ -963,37 +961,27 @@
                 if (result.success) {
                     const registration = result.data;
                     
-                    modalTitle.textContent = '修改报名信息';
+                    modalTitle.textContent = 'Modify registration information';
                     modalBody.innerHTML = `
                         <form id="editForm">
                             <div class="form-group">
-                                <label class="form-label">姓名</label>
+                                <label class="form-label">Name</label>
                                 <input type="text" class="form-control" name="name" value="${registration.formData.name}" required>
                             </div>
                             
                             <div class="form-group">
-                                <label class="form-label">电话</label>
+                                <label class="form-label">Telephone</label>
                                 <input type="tel" class="form-control" name="phone" value="${registration.formData.phone}" required>
                             </div>
                             
                             <div class="form-group">
-                                <label class="form-label">邮箱</label>
+                                <label class="form-label">email</label>
                                 <input type="email" class="form-control" name="email" value="${registration.formData.email}" required>
                             </div>
                             
-                            <div class="form-group">
-                                <label class="form-label">公司</label>
-                                <input type="text" class="form-control" name="company" value="${registration.formData.company}">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label">职位</label>
-                                <input type="text" class="form-control" name="position" value="${registration.formData.position}">
-                            </div>
-                            
                             <div class="action-buttons">
-                                <button type="submit" class="btn btn-primary">保存修改</button>
-                                <button type="button" class="btn btn-default" onclick="detailModal.style.display='none'">取消</button>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                                <button type="button" class="btn btn-default" onclick="detailModal.style.display='none'">Cancel</button>
                             </div>
                         </form>
                     `;
@@ -1024,29 +1012,29 @@
                             const updateResult = await updateResponse.json();
                             
                             if (updateResult.success) {
-                                alert('报名信息已更新');
+                                alert('Registration information has been updated.');
                                 detailModal.style.display = 'none';
                                 loadRegistrations();
                             } else {
-                                alert('更新失败: ' + updateResult.message);
+                                alert('Update failed: ' + updateResult.message);
                             }
                         } catch (error) {
-                            console.error('更新报名信息失败:', error);
-                            alert('更新失败，请重试');
+                            console.error('Registration information update failed:', error);
+                            alert('Update failed, please try again.');
                         }
                     });
                     
                     detailModal.style.display = 'flex';
                 }
             } catch (error) {
-                console.error('获取报名信息失败:', error);
-                alert('获取信息失败，请重试');
+                console.error('Failed to retrieve registration information:', error);
+                alert('Information retrieval failed, please try again.');
             }
         }
         
         // 取消报名
         async function cancelRegistration(id) {
-            if (!confirm('确定要取消报名吗？此操作不可撤销。')) {
+            if (!confirm('Are you sure you want to cancel your registration? This action is irreversible.')) {
                 return;
             }
             
@@ -1058,15 +1046,15 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    alert('报名已取消');
+                    alert('Registration has been cancelled');
                     detailModal.style.display = 'none';
                     loadRegistrations();
                 } else {
-                    alert('取消失败: ' + result.message);
+                    alert('Cancellation failed: ' + result.message);
                 }
             } catch (error) {
-                console.error('取消报名失败:', error);
-                alert('取消失败，请重试');
+                console.error('Failed to cancel registration:', error);
+                alert('Cancellation failed, please try again.');
             }
         }
         
@@ -1090,11 +1078,11 @@
                     detailModal.style.display = 'none';
                     loadRegistrations();
                 } else {
-                    alert('操作失败: ' + result.message);
+                    alert('Operation failed: ' + result.message);
                 }
             } catch (error) {
-                console.error('设置提醒失败:', error);
-                alert('操作失败，请重试');
+                console.error('Failed to set reminder:', error);
+                alert('Operation failed, please try again.');
             }
         }
     </script>
