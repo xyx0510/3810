@@ -11,13 +11,13 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
-// In-memory storage
+// In-memory storage with 2025 data
 let activities = {
   1: {
     id: 1,
-    name: 'Tech Conference 2024',
+    name: 'Tech Conference 2025',
     description: 'Annual technology conference featuring industry leaders and cutting-edge innovations.',
-    date: '2024-06-15',
+    date: '2025-06-15',
     time: '09:00',
     location: 'Convention Center',
     registrationForm: {
@@ -26,14 +26,14 @@ let activities = {
       feeRequired: true,
       feeAmount: 50
     },
-    checkinCode: 'TECH2024',
-    qrCode: 'tech-conf-2024-qr'
+    checkinCode: 'TECH2025',
+    qrCode: 'tech-conf-2025-qr'
   },
   2: {
     id: 2,
     name: 'Coding Workshop',
     description: 'Hands-on programming workshop for beginners. Learn HTML, CSS, and JavaScript basics.',
-    date: '2024-06-20',
+    date: '2025-06-20',
     time: '14:00',
     location: 'Computer Lab B',
     registrationForm: {
@@ -49,7 +49,7 @@ let activities = {
     id: 3,
     name: 'AI Seminar',
     description: 'Explore the latest developments in artificial intelligence and machine learning.',
-    date: '2024-06-25',
+    date: '2025-06-25',
     time: '10:30',
     location: 'Auditorium A',
     registrationForm: {
@@ -60,14 +60,235 @@ let activities = {
     },
     checkinCode: 'AISEM',
     qrCode: 'ai-seminar-qr'
+  },
+  4: {
+    id: 4,
+    name: 'Robotics Competition',
+    description: 'Annual robotics competition for engineering students.',
+    date: '2025-07-10',
+    time: '08:00',
+    location: 'Engineering Building',
+    registrationForm: {
+      fields: ['name', 'studentId', 'phone', 'email'],
+      requirements: 'Team registration required. Maximum 4 members per team.',
+      feeRequired: true,
+      feeAmount: 100
+    },
+    checkinCode: 'ROBOT2025',
+    qrCode: 'robotics-comp-qr'
+  },
+  5: {
+    id: 5,
+    name: 'Career Fair 2025',
+    description: 'Connect with top employers and explore job opportunities.',
+    date: '2025-05-15', // Past event for history testing
+    time: '10:00',
+    location: 'Student Union',
+    registrationForm: {
+      fields: ['name', 'studentId', 'phone', 'email'],
+      requirements: 'Bring your resume and dress professionally.',
+      feeRequired: false,
+      feeAmount: 0
+    },
+    checkinCode: 'CAREER25',
+    qrCode: 'career-fair-qr'
+  },
+  6: {
+    id: 6,
+    name: 'Hackathon 2025',
+    description: '48-hour coding competition with exciting prizes.',
+    date: '2025-07-20',
+    time: '18:00',
+    location: 'Tech Hub',
+    registrationForm: {
+      fields: ['name', 'studentId', 'phone', 'email'],
+      requirements: 'Programming experience required. Teams of 2-4 members.',
+      feeRequired: false,
+      feeAmount: 0
+    },
+    checkinCode: 'HACK25',
+    qrCode: 'hackathon-qr'
+  },
+  7: {
+    id: 7,
+    name: 'Science Exhibition',
+    description: 'Showcase of student research projects and scientific innovations.',
+    date: '2025-05-10', // Past event for history testing
+    time: '13:00',
+    location: 'Science Building',
+    registrationForm: {
+      fields: ['name', 'studentId', 'phone', 'email'],
+      requirements: 'Project submission required before registration.',
+      feeRequired: false,
+      feeAmount: 0
+    },
+    checkinCode: 'SCIEX25',
+    qrCode: 'science-expo-qr'
+  },
+  8: {
+    id: 8,
+    name: 'Business Pitch Competition',
+    description: 'Pitch your startup ideas to industry experts and investors.',
+    date: '2025-08-05',
+    time: '14:00',
+    location: 'Business School',
+    registrationForm: {
+      fields: ['name', 'studentId', 'phone', 'email'],
+      requirements: 'Business plan submission required.',
+      feeRequired: true,
+      feeAmount: 30
+    },
+    checkinCode: 'PITCH25',
+    qrCode: 'pitch-comp-qr'
   }
 };
 
-let registrations = [];
-let registrationIdCounter = 1;
+// Sample registrations for different statuses - all with 2025 dates
+let registrations = [
+  // Pending registrations (等待审核)
+  {
+    id: 1,
+    activityId: 1,
+    name: 'John Smith',
+    studentId: 'S12345',
+    phone: '555-0101',
+    email: 'john.smith@student.edu',
+    status: 'pending',
+    registrationDate: '2025-01-15T10:30:00Z',
+    paid: false
+  },
+  {
+    id: 2,
+    activityId: 8,
+    name: 'Sarah Johnson',
+    studentId: 'S12345',
+    phone: '555-0102',
+    email: 'sarah.johnson@student.edu',
+    status: 'pending',
+    registrationDate: '2025-01-20T14:15:00Z',
+    paid: false
+  },
 
-let checkins = [];
-let checkinIdCounter = 1;
+  // Approved registrations (已通过)
+  {
+    id: 3,
+    activityId: 2,
+    name: 'John Smith',
+    studentId: 'S12345',
+    phone: '555-0101',
+    email: 'john.smith@student.edu',
+    status: 'approved',
+    registrationDate: '2025-01-10T09:45:00Z',
+    paid: true,
+    paymentDate: '2025-01-10T10:00:00Z'
+  },
+  {
+    id: 4,
+    activityId: 6,
+    name: 'John Smith',
+    studentId: 'S12345',
+    phone: '555-0101',
+    email: 'john.smith@student.edu',
+    status: 'approved',
+    registrationDate: '2025-01-18T16:20:00Z',
+    paid: true,
+    paymentDate: '2025-01-18T16:30:00Z'
+  },
+
+  // Rejected registrations (已拒绝)
+  {
+    id: 5,
+    activityId: 4,
+    name: 'John Smith',
+    studentId: 'S12345',
+    phone: '555-0101',
+    email: 'john.smith@student.edu',
+    status: 'rejected',
+    registrationDate: '2025-01-12T11:30:00Z',
+    paid: false,
+    rejectionReason: 'Team registration required for this activity'
+  },
+  {
+    id: 6,
+    activityId: 8,
+    name: 'John Smith',
+    studentId: 'S12345',
+    phone: '555-0101',
+    email: 'john.smith@student.edu',
+    status: 'rejected',
+    registrationDate: '2025-01-22T13:45:00Z',
+    paid: false,
+    rejectionReason: 'Business plan submission missing'
+  },
+
+  // History registrations (历史记录) - past events or cancelled
+  {
+    id: 7,
+    activityId: 5,
+    name: 'John Smith',
+    studentId: 'S12345',
+    phone: '555-0101',
+    email: 'john.smith@student.edu',
+    status: 'approved',
+    registrationDate: '2025-01-05T08:30:00Z',
+    paid: true,
+    paymentDate: '2025-01-05T08:45:00Z'
+  },
+  {
+    id: 8,
+    activityId: 7,
+    name: 'John Smith',
+    studentId: 'S12345',
+    phone: '555-0101',
+    email: 'john.smith@student.edu',
+    status: 'approved',
+    registrationDate: '2025-01-03T12:15:00Z',
+    paid: true,
+    paymentDate: '2025-01-03T12:30:00Z'
+  },
+  {
+    id: 9,
+    activityId: 3,
+    name: 'John Smith',
+    studentId: 'S12345',
+    phone: '555-0101',
+    email: 'john.smith@student.edu',
+    status: 'cancelled',
+    registrationDate: '2025-01-08T15:20:00Z',
+    paid: false
+  }
+];
+
+// Sample check-in records for 2025
+let checkins = [
+  {
+    id: 1,
+    activityId: 5,
+    studentId: 'S12345',
+    checkinTime: '2025-05-15T10:05:00Z',
+    method: 'qr',
+    status: 'checked-in'
+  },
+  {
+    id: 2,
+    activityId: 7,
+    studentId: 'S12345',
+    checkinTime: '2025-05-10T13:10:00Z',
+    method: 'code',
+    status: 'checked-in'
+  },
+  {
+    id: 3,
+    activityId: 2,
+    studentId: 'S12345',
+    checkinTime: '2025-06-20T14:15:00Z',
+    method: 'qr',
+    status: 'checked-in'
+  }
+];
+
+let registrationIdCounter = 10;
+let checkinIdCounter = 4;
 
 let reminders = [];
 
@@ -787,4 +1008,12 @@ app.listen(PORT, () => {
   console.log(`Payment page: http://localhost:${PORT}/payment`);
   console.log(`My Registrations: http://localhost:${PORT}/my-registrations`);
   console.log(`Check-in Page: http://localhost:${PORT}/checkin`);
+  
+  // Display sample student ID for testing
+  console.log(`\nSample Student ID for testing: S12345`);
+  console.log(`This student has registrations in all status categories:`);
+  console.log(`- Pending: Tech Conference 2025, Business Pitch Competition`);
+  console.log(`- Approved: Coding Workshop, Hackathon 2025`);
+  console.log(`- Rejected: Robotics Competition, Business Pitch Competition`);
+  console.log(`- History: Career Fair 2025, Science Exhibition (past events), AI Seminar (cancelled)`);
 });
