@@ -154,6 +154,15 @@
             background: #5a6268;
         }
 
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+
         .btn:disabled {
             background: #ccc;
             cursor: not-allowed;
@@ -237,6 +246,12 @@
             border: 1px solid #bee5eb;
         }
 
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -263,6 +278,24 @@
             font-weight: 600;
         }
 
+        .payment-status {
+            display: inline-block;
+            padding: 0.3rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .payment-status.paid {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .payment-status.unpaid {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
         .footer {
             text-align: center;
             margin-top: 2rem;
@@ -281,6 +314,14 @@
             border: 1px solid #ddd;
             border-radius: 5px;
             font-size: 1rem;
+        }
+
+        .countdown {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #667eea;
+            text-align: center;
+            margin: 1rem 0;
         }
     </style>
 </head>
@@ -327,6 +368,7 @@
                         <th>Phone</th>
                         <th>Email</th>
                         <th>Status</th>
+                        <th>Payment</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -393,6 +435,24 @@
             </div>
         </div>
 
+        <!-- Payment Redirect Modal -->
+        <div class="modal" id="payment-redirect-modal">
+            <div class="modal-content">
+                <h2>Payment Required</h2>
+                <div class="alert alert-warning">
+                    <p>This activity requires payment to complete your registration.</p>
+                    <p><strong>Amount: $<span id="payment-amount">0</span></strong></p>
+                </div>
+                <div class="countdown" id="countdown">
+                    Redirecting to payment page in 5 seconds...
+                </div>
+                <div class="form-group" style="text-align: center;">
+                    <button class="btn btn-success" onclick="redirectToPayment()">Go to Payment Now</button>
+                    <button class="btn btn-secondary" onclick="closePaymentRedirectModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+
         <div class="footer">
             <p>Activity Registration System &copy; 2024</p>
         </div>
@@ -403,15 +463,21 @@
         let activities = [];
         let registrations = [];
         let currentStudentId = '';
+        let pendingPaymentRegistration = null;
+        let countdownInterval = null;
+        let countdownValue = 5;
 
         // DOM elements
         const activitiesContainer = document.getElementById('activities-container');
         const registrationsBody = document.getElementById('registrations-body');
         const registrationModal = document.getElementById('registration-modal');
         const editModal = document.getElementById('edit-modal');
+        const paymentRedirectModal = document.getElementById('payment-redirect-modal');
         const alertContainer = document.getElementById('alert-container');
         const totalActivitiesElement = document.getElementById('total-activities');
         const totalRegistrationsElement = document.getElementById('total-registrations');
+        const paymentAmountElement = document.getElementById('payment-amount');
+        const countdownElement = document.getElementById('countdown');
 
         // Initialize application
         document.addEventListener('DOMContentLoaded', function() {
@@ -504,7 +570,7 @@
             if (registrations.length === 0) {
                 registrationsBody.innerHTML = `
                     <tr>
-                        <td colspan="7" style="text-align: center;">No registrations found for this Student ID</td>
+                        <td colspan="8" style="text-align: center;">No registrations found for this Student ID</td>
                     </tr>
                 `;
                 return;
@@ -512,6 +578,8 @@
             
             registrations.forEach(registration => {
                 const activity = activities.find(a => a.id === registration.activityId) || { name: 'Unknown Activity' };
+                const activityFee = activities.find(a => a.id === registration.activityId)?.registrationForm?.feeAmount || 0;
+                const requiresPayment = activities.find(a => a.id === registration.activityId)?.registrationForm?.feeRequired || false;
                 
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -522,8 +590,16 @@
                     <td>${registration.email}</td>
                     <td class="status-${registration.status}">${registration.status.charAt(0).toUpperCase() + registration.status.slice(1)}</td>
                     <td>
+                        ${requiresPayment ? 
+                            (registration.paid ? 
+                                '<span class="payment-status paid">Paid</span>' : 
+                                '<span class="payment-status unpaid">Unpaid</span>') : 
+                            '<span>Free</span>'}
+                    </td>
+                    <td>
                         ${registration.status === 'pending' ? 
                             `<button class="btn" onclick="openEditModal(${registration.id})">Edit</button>
+                             ${requiresPayment && !registration.paid ? `<button class="btn btn-warning" onclick="redirectToPaymentPage(${registration.id})">Pay Now</button>` : ''}
                              <button class="btn btn-danger" onclick="cancelRegistration(${registration.id})">Cancel</button>` : 
                             'No actions available'}
                     </td>
@@ -637,7 +713,12 @@
                     closeModal();
                     
                     if (result.requiresPayment) {
-                        showAlert(`Payment required: $${result.paymentAmount}. Please proceed to payment.`, 'info');
+                        // Store the registration that requires payment
+                        pendingPaymentRegistration = result.data;
+                        pendingPaymentRegistration.paymentAmount = result.paymentAmount;
+                        
+                        // Show payment redirect modal
+                        showPaymentRedirectModal(result.paymentAmount);
                     }
                     
                     // Reload registrations if we have a current student ID
@@ -651,6 +732,69 @@
                 showAlert('Error submitting registration: ' + error.message, 'danger');
             }
         });
+
+        // Show payment redirect modal
+        function showPaymentRedirectModal(amount) {
+            paymentAmountElement.textContent = amount;
+            countdownValue = 5;
+            updateCountdown();
+            
+            paymentRedirectModal.style.display = 'flex';
+            
+            // Start countdown
+            countdownInterval = setInterval(function() {
+                countdownValue--;
+                updateCountdown();
+                
+                if (countdownValue <= 0) {
+                    clearInterval(countdownInterval);
+                    redirectToPayment();
+                }
+            }, 1000);
+        }
+
+        // Update countdown display
+        function updateCountdown() {
+            countdownElement.textContent = `Redirecting to payment page in ${countdownValue} seconds...`;
+        }
+
+        // Close payment redirect modal
+        function closePaymentRedirectModal() {
+            paymentRedirectModal.style.display = 'none';
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+        }
+
+        // Redirect to payment page
+        function redirectToPayment() {
+            closePaymentRedirectModal();
+            
+            if (pendingPaymentRegistration) {
+                // Store registration info in sessionStorage to use on payment page
+                sessionStorage.setItem('pendingPaymentRegistration', JSON.stringify(pendingPaymentRegistration));
+                
+                // Redirect to payment page
+                window.location.href = '/payment';
+            }
+        }
+
+        // Redirect to payment page for existing registration
+        function redirectToPaymentPage(registrationId) {
+            const registration = registrations.find(r => r.id === registrationId);
+            const activity = activities.find(a => a.id === registration.activityId);
+            
+            if (registration && activity) {
+                pendingPaymentRegistration = registration;
+                pendingPaymentRegistration.paymentAmount = activity.registrationForm.feeAmount;
+                
+                // Store registration info in sessionStorage to use on payment page
+                sessionStorage.setItem('pendingPaymentRegistration', JSON.stringify(pendingPaymentRegistration));
+                
+                // Redirect to payment page
+                window.location.href = '/payment';
+            }
+        }
 
         // Submit edit form
         document.getElementById('edit-form').addEventListener('submit', async function(e) {
@@ -738,6 +882,9 @@
             }
             if (e.target === editModal) {
                 closeEditModal();
+            }
+            if (e.target === paymentRedirectModal) {
+                closePaymentRedirectModal();
             }
         });
     </script>
