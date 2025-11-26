@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const { v4: uuidv4 } = require('uuid');
 
 const app = express();
-const PORT = 8099;
+const PORT = 3000;
 
 // Middleware
 app.use(cors());
