@@ -43,10 +43,37 @@
             opacity: 0.9;
         }
 
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
         .activity-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
             margin-bottom: 2rem;
         }
 
@@ -56,6 +83,8 @@
             padding: 1.5rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
         }
 
         .activity-card:hover {
@@ -72,6 +101,7 @@
         .activity-card p {
             color: #666;
             margin-bottom: 1rem;
+            flex-grow: 1;
         }
 
         .activity-details {
@@ -207,19 +237,6 @@
             border: 1px solid #bee5eb;
         }
 
-        .registration-list {
-            background: white;
-            border-radius: 10px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
-        }
-
-        .registration-list h2 {
-            margin-bottom: 1rem;
-            color: #333;
-        }
-
         table {
             width: 100%;
             border-collapse: collapse;
@@ -253,6 +270,18 @@
             color: #666;
             border-top: 1px solid #ddd;
         }
+
+        .search-box {
+            margin-bottom: 1.5rem;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
     </style>
 </head>
 <body>
@@ -264,11 +293,30 @@
 
         <div id="alert-container"></div>
 
-        <div class="activity-grid" id="activities-container">
-            <!-- Activities will be loaded here -->
+        <div class="dashboard">
+            <div class="card">
+                <h2>Find Your Registration</h2>
+                <div class="search-box">
+                    <input type="text" id="student-id-search" placeholder="Enter your Student ID to view registrations">
+                </div>
+                <button class="btn" onclick="loadStudentRegistrations()">Search</button>
+            </div>
+            
+            <div class="card">
+                <h2>Quick Stats</h2>
+                <p>Total Activities: <span id="total-activities">0</span></p>
+                <p>Your Registrations: <span id="total-registrations">0</span></p>
+            </div>
         </div>
 
-        <div class="registration-list">
+        <div class="card">
+            <h2>Available Activities</h2>
+            <div class="activity-grid" id="activities-container">
+                <!-- Activities will be loaded here -->
+            </div>
+        </div>
+
+        <div class="card">
             <h2>Your Registrations</h2>
             <table id="registrations-table">
                 <thead>
@@ -354,6 +402,7 @@
         // Global variables
         let activities = [];
         let registrations = [];
+        let currentStudentId = '';
 
         // DOM elements
         const activitiesContainer = document.getElementById('activities-container');
@@ -361,92 +410,58 @@
         const registrationModal = document.getElementById('registration-modal');
         const editModal = document.getElementById('edit-modal');
         const alertContainer = document.getElementById('alert-container');
+        const totalActivitiesElement = document.getElementById('total-activities');
+        const totalRegistrationsElement = document.getElementById('total-registrations');
 
         // Initialize application
         document.addEventListener('DOMContentLoaded', function() {
             loadActivities();
-            loadRegistrations();
+            
+            // Add event listener for Enter key in search box
+            document.getElementById('student-id-search').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    loadStudentRegistrations();
+                }
+            });
         });
 
         // Load activities from API
         async function loadActivities() {
             try {
-                // Fetch activities from API
-                const response = await fetch('/api/activities/1'); // Get first activity as example
+                const response = await fetch('/api/activities');
                 const result = await response.json();
                 
                 if (result.success) {
-                    // In a real app, we would fetch all activities
-                    // For demo, we'll use sample data
-                    activities = [
-                        {
-                            id: 1,
-                            name: 'Tech Conference 2024',
-                            description: 'Join us for the annual technology conference featuring industry leaders and cutting-edge innovations.',
-                            registrationForm: {
-                                fields: ['name', 'studentId', 'phone', 'email'],
-                                requirements: 'Please provide accurate information. Student ID verification required.',
-                                feeRequired: true,
-                                feeAmount: 50
-                            }
-                        },
-                        {
-                            id: 2,
-                            name: 'Coding Workshop',
-                            description: 'Hands-on programming workshop for beginners. Learn HTML, CSS, and JavaScript basics.',
-                            registrationForm: {
-                                fields: ['name', 'studentId', 'phone', 'email'],
-                                requirements: 'Basic computer knowledge required. Bring your own laptop.',
-                                feeRequired: false,
-                                feeAmount: 0
-                            }
-                        }
-                    ];
-
+                    activities = result.data;
                     renderActivities();
+                    totalActivitiesElement.textContent = activities.length;
                 } else {
                     showAlert('Error loading activities', 'danger');
                 }
             } catch (error) {
                 showAlert('Error loading activities: ' + error.message, 'danger');
-                // Fallback to sample data
-                activities = [
-                    {
-                        id: 1,
-                        name: 'Tech Conference 2024',
-                        description: 'Join us for the annual technology conference featuring industry leaders and cutting-edge innovations.',
-                        registrationForm: {
-                            fields: ['name', 'studentId', 'phone', 'email'],
-                            requirements: 'Please provide accurate information. Student ID verification required.',
-                            feeRequired: true,
-                            feeAmount: 50
-                        }
-                    },
-                    {
-                        id: 2,
-                        name: 'Coding Workshop',
-                        description: 'Hands-on programming workshop for beginners. Learn HTML, CSS, and JavaScript basics.',
-                        registrationForm: {
-                            fields: ['name', 'studentId', 'phone', 'email'],
-                            requirements: 'Basic computer knowledge required. Bring your own laptop.',
-                            feeRequired: false,
-                            feeAmount: 0
-                        }
-                    }
-                ];
-                renderActivities();
             }
         }
 
-        // Load registrations from API
-        async function loadRegistrations() {
+        // Load registrations for a specific student
+        async function loadStudentRegistrations() {
+            const studentId = document.getElementById('student-id-search').value.trim();
+            
+            if (!studentId) {
+                showAlert('Please enter a Student ID', 'danger');
+                return;
+            }
+            
+            currentStudentId = studentId;
+            
             try {
-                const response = await fetch('/api/registrations');
+                const response = await fetch(`/api/registrations/student/${studentId}`);
                 const result = await response.json();
                 
                 if (result.success) {
                     registrations = result.data;
                     renderRegistrations();
+                    totalRegistrationsElement.textContent = registrations.length;
                 } else {
                     showAlert('Error loading registrations', 'danger');
                 }
@@ -458,6 +473,11 @@
         // Render activities to the page
         function renderActivities() {
             activitiesContainer.innerHTML = '';
+            
+            if (activities.length === 0) {
+                activitiesContainer.innerHTML = '<p>No activities available at the moment.</p>';
+                return;
+            }
             
             activities.forEach(activity => {
                 const activityCard = document.createElement('div');
@@ -484,7 +504,7 @@
             if (registrations.length === 0) {
                 registrationsBody.innerHTML = `
                     <tr>
-                        <td colspan="7" style="text-align: center;">No registrations found</td>
+                        <td colspan="7" style="text-align: center;">No registrations found for this Student ID</td>
                     </tr>
                 `;
                 return;
@@ -620,7 +640,10 @@
                         showAlert(`Payment required: $${result.paymentAmount}. Please proceed to payment.`, 'info');
                     }
                     
-                    loadRegistrations();
+                    // Reload registrations if we have a current student ID
+                    if (currentStudentId) {
+                        loadStudentRegistrations();
+                    }
                 } else {
                     showAlert('Registration failed: ' + result.message, 'danger');
                 }
@@ -654,7 +677,11 @@
                 if (result.success) {
                     showAlert('Registration updated successfully!', 'success');
                     closeEditModal();
-                    loadRegistrations();
+                    
+                    // Reload registrations if we have a current student ID
+                    if (currentStudentId) {
+                        loadStudentRegistrations();
+                    }
                 } else {
                     showAlert('Update failed: ' + result.message, 'danger');
                 }
@@ -678,7 +705,11 @@
                 
                 if (result.success) {
                     showAlert('Registration cancelled successfully!', 'success');
-                    loadRegistrations();
+                    
+                    // Reload registrations if we have a current student ID
+                    if (currentStudentId) {
+                        loadStudentRegistrations();
+                    }
                 } else {
                     showAlert('Cancellation failed: ' + result.message, 'danger');
                 }
