@@ -1,7 +1,7 @@
 {
   "name": "activity-registration-system",
   "version": "1.0.0",
-  "description": "Activity registration module with CRUD operations",
+  "description": "Complete activity registration system with check-in and payment",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
