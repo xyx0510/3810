@@ -11,6 +11,21 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.json());
 app.use(express.static('public'));
 
+// 分类图标映射函数
+function getCategoryIcon(category) {
+  const iconMap = {
+    'Technology': 'laptop-code',
+    'Arts': 'palette',
+    'Environment': 'leaf',
+    'Business': 'chart-line',
+    'Sports': 'running',
+    'Science': 'flask',
+    'Music': 'music',
+    'Volunteer': 'hands-helping'
+  };
+  return iconMap[category] || 'users';
+}
+
 // Mock data - 更新时间为2025年
 const clubs = {
   1: {
@@ -92,21 +107,37 @@ const activities = {
       location: 'Innovation Center',
       image: 'https://images.unsplash.com/photo-1535223289827-42f1e9919769?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
       description: '48-hour hackathon where you can build anything you want. Work in teams or solo to create innovative projects. Prizes for the top three projects! Food and drinks will be provided throughout the event.'
+    },
+    {
+      id: 3,
+      title: 'Guest Speaker: Tech Industry Leader',
+      date: 'February 20, 2025',
+      location: 'Auditorium A',
+      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
+      description: 'We have invited a renowned tech industry leader to share their insights and experiences. Learn about career opportunities, industry trends, and get valuable advice for your professional development. Open to all students.'
     }
   ],
   2: [
     {
-      id: 3,
+      id: 4,
       title: 'Watercolor Painting Workshop',
       date: 'March 22, 2025',
       location: 'Arts Center, Studio A',
       image: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
       description: 'Learn the basics of watercolor painting in this hands-on workshop. All materials provided. No experience necessary!'
+    },
+    {
+      id: 5,
+      title: 'Digital Art Exhibition',
+      date: 'April 12-15, 2025',
+      location: 'University Gallery',
+      image: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
+      description: 'Showcase of digital artwork created by our members. Open to the public.'
     }
   ],
   3: [
     {
-      id: 4,
+      id: 6,
       title: 'Campus Clean-up Day',
       date: 'April 10, 2025',
       location: 'Main Campus',
@@ -116,7 +147,7 @@ const activities = {
   ],
   4: [
     {
-      id: 5,
+      id: 7,
       title: 'Startup Pitch Competition',
       date: 'May 8, 2025',
       location: 'Business School Auditorium',
@@ -139,30 +170,72 @@ const members = {
       name: 'Sarah Miller',
       role: 'Vice President',
       avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
+    },
+    {
+      id: 3,
+      name: 'Michael Chen',
+      role: 'Treasurer',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
+    },
+    {
+      id: 4,
+      name: 'Emily Davis',
+      role: 'Event Coordinator',
+      avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
+    },
+    {
+      id: 5,
+      name: 'David Wilson',
+      role: 'Technical Lead',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
     }
   ],
   2: [
     {
-      id: 3,
+      id: 6,
       name: 'Jessica Brown',
       role: 'President',
       avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
+    },
+    {
+      id: 7,
+      name: 'Ryan Taylor',
+      role: 'Vice President',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
+    },
+    {
+      id: 8,
+      name: 'Olivia Martinez',
+      role: 'Events Director',
+      avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
     }
   ],
   3: [
     {
-      id: 4,
-      name: 'Michael Chen',
+      id: 9,
+      name: 'Daniel Green',
       role: 'President',
       avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
+    },
+    {
+      id: 10,
+      name: 'Sophia Lee',
+      role: 'Vice President',
+      avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
     }
   ],
   4: [
     {
-      id: 5,
-      name: 'David Wilson',
+      id: 11,
+      name: 'Robert Kim',
       role: 'President',
       avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
+    },
+    {
+      id: 12,
+      name: 'Amanda White',
+      role: 'Vice President',
+      avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
     }
   ]
 };
@@ -197,7 +270,8 @@ app.get('/', (req, res) => {
     clubs: allClubs,
     featuredClubs: featuredClubs,
     recentActivities: recentActivities,
-    categories: categories
+    categories: categories,
+    getCategoryIcon: getCategoryIcon // 传递函数到模板
   });
 });
 
@@ -218,7 +292,7 @@ app.get('/club/:id', (req, res) => {
   });
 });
 
-// API Routes (保持不变)
+// API Routes
 app.get('/api/clubs/:id', (req, res) => {
   const clubId = req.params.id;
   const club = clubs[clubId];
