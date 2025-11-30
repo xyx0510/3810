@@ -34,7 +34,7 @@ const clubs = {
     description: 'A community of technology enthusiasts exploring the latest innovations.',
     logo: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
     followers: 245,
-    activities: 12,
+    activities: 3,
     members: 48,
     detailedDescription: 'The Tech Innovators Club is a vibrant community of students passionate about technology and innovation. We organize workshops, hackathons, and guest speaker events to explore cutting-edge technologies and develop practical skills.',
     established: 'January 2020',
@@ -49,7 +49,7 @@ const clubs = {
     description: 'Expressing creativity through various art forms and design thinking.',
     logo: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
     followers: 178,
-    activities: 8,
+    activities: 2,
     members: 32,
     detailedDescription: 'The Art & Design Society brings together creative minds to explore various forms of artistic expression. From painting workshops to digital design sessions, we provide a space for artists of all levels to grow and collaborate.',
     established: 'March 2019',
@@ -64,7 +64,7 @@ const clubs = {
     description: 'Promoting sustainability and environmental consciousness on campus.',
     logo: 'https://www.orchidsinternationalschool.com/_next/image?url=https%3A%2F%2Fcdn-cms.orchidsinternationalschool.com%2Fmedia%2Fblog%2Fenvironmental-protection%20(1).jpg&w=1920&q=75',
     followers: 156,
-    activities: 6,
+    activities: 1,
     members: 28,
     detailedDescription: 'We are dedicated to creating a more sustainable campus and raising awareness about environmental issues. Join us for clean-up drives, educational workshops, and advocacy campaigns.',
     established: 'September 2021',
@@ -79,7 +79,7 @@ const clubs = {
     description: 'Developing future business leaders and entrepreneurs.',
     logo: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
     followers: 198,
-    activities: 10,
+    activities: 1,
     members: 42,
     detailedDescription: 'Our club provides students with opportunities to develop business skills, network with professionals, and work on real-world projects. We host pitch competitions, mentorship programs, and industry visits.',
     established: 'January 2020',
@@ -374,4 +374,5 @@ app.get('/api/activities/:id', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
 
