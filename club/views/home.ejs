@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Club Hub - All Student Clubs</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 0;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 18px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            font-size: 28px;
+            margin: 40px 0 20px;
+            color: #333;
+            border-left: 4px solid #6a11cb;
+            padding-left: 15px;
+        }
+        
+        .featured-clubs {
+            margin-bottom: 40px;
+        }
+        
+        .clubs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .club-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .club-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .club-card.featured {
+            border: 3px solid #6a11cb;
+        }
+        
+        .club-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        
+        .club-content {
+            padding: 20px;
+        }
+        
+        .club-category {
+            display: inline-block;
+            background: #e9ecef;
+            color: #495057;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .club-name {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .club-description {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        .club-stats {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid #e9ecef;
+            padding-top: 15px;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #6a11cb;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .activities-section {
+            margin-bottom: 40px;
+        }
+        
+        .activities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .activity-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+        
+        .activity-card:hover {
+            transform: translateY(-3px);
+        }
+        
+        .activity-image {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+        }
+        
+        .activity-content {
+            padding: 15px;
+        }
+        
+        .activity-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .activity-date {
+            color: #666;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .categories-section {
+            margin-bottom: 40px;
+        }
+        
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .category-card {
+            background: white;
+            padding: 25px 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-3px);
+        }
+        
+        .category-icon {
+            font-size: 32px;
+            color: #6a11cb;
+            margin-bottom: 10px;
+        }
+        
+        .category-name {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .club-count {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .featured-badge {
+            background: #6a11cb;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        
+        .view-all {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.4);
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 32px;
+            }
+            
+            .clubs-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .activities-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Club Hub</h1>
+            <p>Discover and join student clubs and organizations at our university</p>
+        </div>
+        
+        <!-- Featured Clubs Section -->
+        <div class="featured-clubs">
+            <h2 class="section-title">Featured Clubs</h2>
+            <div class="clubs-grid">
+                <% featuredClubs.forEach(club => { %>
+                    <div class="club-card featured" onclick="location.href='/club/<%= club.id %>'">
+                        <img src="<%= club.logo %>" alt="<%= club.name %>" class="club-image">
+                        <div class="club-content">
+                            <div class="featured-badge">Featured</div>
+                            <div class="club-category"><%= club.category %></div>
+                            <h3 class="club-name"><%= club.name %></h3>
+                            <p class="club-description"><%= club.description %></p>
+                            <div class="club-stats">
+                                <div class="stat">
+                                    <div class="stat-value"><%= club.followers %></div>
+                                    <div class="stat-label">Followers</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value"><%= club.activities %></div>
+                                    <div class="stat-label">Activities</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value"><%= club.members %></div>
+                                    <div class="stat-label">Members</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+        
+        <!-- Recent Activities Section -->
+        <div class="activities-section">
+            <h2 class="section-title">Recent Activities</h2>
+            <div class="activities-grid">
+                <% recentActivities.forEach(activity => { %>
+                    <div class="activity-card">
+                        <img src="<%= activity.image %>" alt="<%= activity.title %>" class="activity-image">
+                        <div class="activity-content">
+                            <h4 class="activity-title"><%= activity.title %></h4>
+                            <div class="activity-date">
+                                <i class="far fa-calendar"></i>
+                                <%= activity.date %>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+        
+        <!-- All Clubs Section -->
+        <div class="all-clubs-section">
+            <h2 class="section-title">All Clubs & Organizations</h2>
+            <div class="clubs-grid">
+                <% clubs.forEach(club => { %>
+                    <div class="club-card" onclick="location.href='/club/<%= club.id %>'">
+                        <img src="<%= club.logo %>" alt="<%= club.name %>" class="club-image">
+                        <div class="club-content">
+                            <div class="club-category"><%= club.category %></div>
+                            <h3 class="club-name"><%= club.name %></h3>
+                            <p class="club-description"><%= club.description %></p>
+                            <div class="club-stats">
+                                <div class="stat">
+                                    <div class="stat-value"><%= club.followers %></div>
+                                    <div class="stat-label">Followers</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value"><%= club.activities %></div>
+                                    <div class="stat-label">Activities</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value"><%= club.members %></div>
+                                    <div class="stat-label">Members</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+        
+        <!-- Categories Section -->
+        <div class="categories-section">
+            <h2 class="section-title">Browse by Category</h2>
+            <div class="categories-grid">
+                <% categories.forEach(category => { 
+                    const clubCount = clubs.filter(club => club.category === category).length;
+                %>
+                    <div class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-<%= getCategoryIcon(category) %>"></i>
+                        </div>
+                        <div class="category-name"><%= category %></div>
+                        <div class="club-count"><%= clubCount %> club<%= clubCount !== 1 ? 's' : '' %></div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 简单的分类图标映射
+        function getCategoryIcon(category) {
+            const iconMap = {
+                'Technology': 'laptop-code',
+                'Arts': 'palette',
+                'Environment': 'leaf',
+                'Business': 'chart-line',
+                'Sports': 'running',
+                'Science': 'flask',
+                'Music': 'music',
+                'Volunteer': 'hands-helping'
+            };
+            return iconMap[category] || 'users';
+        }
+        
+        // 为所有分类卡片添加点击事件
+        document.querySelectorAll('.category-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const category = this.querySelector('.category-name').textContent;
+                alert(`Showing clubs in category: ${category}`);
+                // 这里可以添加实际过滤逻辑
+            });
+        });
+    </script>
+</body>
+</html>
