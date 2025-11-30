@@ -17,27 +17,61 @@ const clubs = {
     id: 1,
     name: 'Tech Innovators Club',
     description: 'A community of technology enthusiasts exploring the latest innovations.',
-    logo: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.linkedin.com%2Fcompany%2Ftech-innovators7&psig=AOvVaw2XDNMbyMKPYJUTEBjslz-l&ust=1764582108233000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCMCur-XKmZEDFQAAAAAdAAAAABAE',
+    logo: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
     followers: 245,
     activities: 12,
     members: 48,
     detailedDescription: 'The Tech Innovators Club is a vibrant community of students passionate about technology and innovation. We organize workshops, hackathons, and guest speaker events to explore cutting-edge technologies and develop practical skills.',
     established: 'January 2020',
     meetingTime: 'Every Wednesday, 6:00 PM',
-    location: 'Engineering Building, Room 302'
+    location: 'Engineering Building, Room 302',
+    category: 'Technology',
+    featured: true
   },
   2: {
     id: 2,
     name: 'Art & Design Society',
     description: 'Expressing creativity through various art forms and design thinking.',
-    logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOLA5LFJiFWAY9FZzYX0rCe1_nNsTYg59Rig&s',
+    logo: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
     followers: 178,
     activities: 8,
     members: 32,
     detailedDescription: 'The Art & Design Society brings together creative minds to explore various forms of artistic expression. From painting workshops to digital design sessions, we provide a space for artists of all levels to grow and collaborate.',
     established: 'March 2019',
     meetingTime: 'Every Friday, 4:00 PM',
-    location: 'Arts Center, Studio B'
+    location: 'Arts Center, Studio B',
+    category: 'Arts',
+    featured: false
+  },
+  3: {
+    id: 3,
+    name: 'Environmental Awareness Group',
+    description: 'Promoting sustainability and environmental consciousness on campus.',
+    logo: 'https://images.unsplash.com/photo-1569163139394-de4e4f43e4e3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
+    followers: 156,
+    activities: 6,
+    members: 28,
+    detailedDescription: 'We are dedicated to creating a more sustainable campus and raising awareness about environmental issues. Join us for clean-up drives, educational workshops, and advocacy campaigns.',
+    established: 'September 2021',
+    meetingTime: 'Every Tuesday, 5:00 PM',
+    location: 'Environmental Science Building',
+    category: 'Environment',
+    featured: true
+  },
+  4: {
+    id: 4,
+    name: 'Business & Entrepreneurship Club',
+    description: 'Developing future business leaders and entrepreneurs.',
+    logo: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
+    followers: 198,
+    activities: 10,
+    members: 42,
+    detailedDescription: 'Our club provides students with opportunities to develop business skills, network with professionals, and work on real-world projects. We host pitch competitions, mentorship programs, and industry visits.',
+    established: 'January 2020',
+    meetingTime: 'Every Thursday, 6:30 PM',
+    location: 'Business School, Room 105',
+    category: 'Business',
+    featured: false
   }
 };
 
@@ -48,7 +82,7 @@ const activities = {
       title: 'AI Workshop: Introduction to Machine Learning',
       date: 'March 15, 2025',
       location: 'Computer Lab 3',
-      image: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fanexas.net%2Fcourse%2Fintroduction-to-ai-and-machine-learning%2F&psig=AOvVaw0N7fH87EZXIwvjyQLBXo2X&ust=1764581735190000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCNCV_73JmZEDFQAAAAAdAAAAABAK',
+      image: 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
       description: 'Join us for an interactive workshop on the basics of machine learning. We will cover topics such as linear regression, classification, and clustering. No prior experience required! This workshop is perfect for beginners who want to get started with AI and machine learning.'
     },
     {
@@ -56,34 +90,38 @@ const activities = {
       title: 'Hackathon 2025',
       date: 'April 5-6, 2025',
       location: 'Innovation Center',
-      image: 'https://img.freepik.com/free-vector/hackathon-doodle-hand-drawing-team-programmers-web-developers-managers-graphic-designers-deve_88138-1348.jpg?semt=ais_hybrid&w=740&q=80',
+      image: 'https://images.unsplash.com/photo-1535223289827-42f1e9919769?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
       description: '48-hour hackathon where you can build anything you want. Work in teams or solo to create innovative projects. Prizes for the top three projects! Food and drinks will be provided throughout the event.'
-    },
-    {
-      id: 3,
-      title: 'Guest Speaker: Tech Industry Leader',
-      date: 'February 20, 2025',
-      location: 'Auditorium A',
-      image: 'https://i0.wp.com/swisscognitive.ch/wp-content/uploads/2021/09/dalith_steiger_keynote_speaker_expert_in_artificial_intelligence_swisscognitive_portrait_2021_012.jpg?fit=1440%2C810&ssl=1',
-      description: 'We have invited a renowned tech industry leader to share their insights and experiences. Learn about career opportunities, industry trends, and get valuable advice for your professional development. Open to all students.'
     }
   ],
   2: [
     {
-      id: 4,
+      id: 3,
       title: 'Watercolor Painting Workshop',
       date: 'March 22, 2025',
       location: 'Arts Center, Studio A',
-      image: 'https://cdn.shopify.com/s/files/1/0560/6477/0112/files/IMG_4128-S_480x480.jpg?v=1684139712',
+      image: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
       description: 'Learn the basics of watercolor painting in this hands-on workshop. All materials provided. No experience necessary!'
-    },
+    }
+  ],
+  3: [
+    {
+      id: 4,
+      title: 'Campus Clean-up Day',
+      date: 'April 10, 2025',
+      location: 'Main Campus',
+      image: 'https://images.unsplash.com/photo-1569163139394-de4e4f43e4e3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
+      description: 'Join us for our quarterly campus clean-up event. Gloves and bags provided. All volunteers receive a free eco-friendly water bottle!'
+    }
+  ],
+  4: [
     {
       id: 5,
-      title: 'Digital Art Exhibition',
-      date: 'April 12-15, 2025',
-      location: 'University Gallery',
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRS-oYUutvji2GLpFhOVZjWH3C3iWYWmnjbYQ&s',
-      description: 'Showcase of digital artwork created by our members. Open to the public.'
+      title: 'Startup Pitch Competition',
+      date: 'May 8, 2025',
+      location: 'Business School Auditorium',
+      image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
+      description: 'Pitch your business idea to a panel of judges for a chance to win seed funding and mentorship opportunities.'
     }
   ]
 };
@@ -101,56 +139,69 @@ const members = {
       name: 'Sarah Miller',
       role: 'Vice President',
       avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
-    },
-    {
-      id: 3,
-      name: 'Michael Chen',
-      role: 'Treasurer',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
-    },
-    {
-      id: 4,
-      name: 'Emily Davis',
-      role: 'Event Coordinator',
-      avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
-    },
-    {
-      id: 5,
-      name: 'David Wilson',
-      role: 'Technical Lead',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
     }
   ],
   2: [
     {
-      id: 6,
+      id: 3,
       name: 'Jessica Brown',
       role: 'President',
       avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
-    },
+    }
+  ],
+  3: [
     {
-      id: 7,
-      name: 'Ryan Taylor',
-      role: 'Vice President',
+      id: 4,
+      name: 'Michael Chen',
+      role: 'President',
       avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
-    },
+    }
+  ],
+  4: [
     {
-      id: 8,
-      name: 'Olivia Martinez',
-      role: 'Events Director',
-      avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
+      id: 5,
+      name: 'David Wilson',
+      role: 'President',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
     }
   ]
 };
 
 const followStatus = {
   1: false,
-  2: false
+  2: false,
+  3: false,
+  4: false
 };
+
+// 获取所有活动（用于首页显示最新活动）
+function getAllActivities() {
+  const allActivities = [];
+  for (const clubId in activities) {
+    allActivities.push(...activities[clubId]);
+  }
+  // 按日期排序（最新的在前面）
+  return allActivities.sort((a, b) => new Date(b.date) - new Date(a.date));
+}
 
 // Routes
 
-// 渲染社团主页
+// 首页 - 显示所有社团概览
+app.get('/', (req, res) => {
+  const allClubs = Object.values(clubs);
+  const recentActivities = getAllActivities().slice(0, 6); // 获取最近6个活动
+  const featuredClubs = allClubs.filter(club => club.featured);
+  const categories = [...new Set(allClubs.map(club => club.category))];
+  
+  res.render('home', {
+    clubs: allClubs,
+    featuredClubs: featuredClubs,
+    recentActivities: recentActivities,
+    categories: categories
+  });
+});
+
+// 社团主页
 app.get('/club/:id', (req, res) => {
   const clubId = req.params.id;
   const club = clubs[clubId];
@@ -159,7 +210,7 @@ app.get('/club/:id', (req, res) => {
     return res.status(404).send('Club not found');
   }
   
-  res.render('index', { 
+  res.render('club', { 
     club: club,
     activities: activities[clubId] || [],
     members: members[clubId] || [],
@@ -167,7 +218,7 @@ app.get('/club/:id', (req, res) => {
   });
 });
 
-// Get club details API
+// API Routes (保持不变)
 app.get('/api/clubs/:id', (req, res) => {
   const clubId = req.params.id;
   const club = clubs[clubId];
@@ -179,7 +230,6 @@ app.get('/api/clubs/:id', (req, res) => {
   res.json(club);
 });
 
-// Get club activities API
 app.get('/api/clubs/:id/activities', (req, res) => {
   const clubId = req.params.id;
   const clubActivities = activities[clubId] || [];
@@ -187,7 +237,6 @@ app.get('/api/clubs/:id/activities', (req, res) => {
   res.json(clubActivities);
 });
 
-// Get club members API
 app.get('/api/clubs/:id/members', (req, res) => {
   const clubId = req.params.id;
   const clubMembers = members[clubId] || [];
@@ -195,7 +244,6 @@ app.get('/api/clubs/:id/members', (req, res) => {
   res.json(clubMembers);
 });
 
-// Follow a club API
 app.post('/api/clubs/:id/follow', (req, res) => {
   const clubId = req.params.id;
   
@@ -209,7 +257,6 @@ app.post('/api/clubs/:id/follow', (req, res) => {
   res.json({ success: true, message: 'Successfully followed the club' });
 });
 
-// Unfollow a club API
 app.delete('/api/clubs/:id/follow', (req, res) => {
   const clubId = req.params.id;
   
@@ -223,7 +270,6 @@ app.delete('/api/clubs/:id/follow', (req, res) => {
   res.json({ success: true, message: 'Successfully unfollowed the club' });
 });
 
-// Get follow status API
 app.get('/api/clubs/:id/follow-status', (req, res) => {
   const clubId = req.params.id;
   
@@ -234,12 +280,10 @@ app.get('/api/clubs/:id/follow-status', (req, res) => {
   res.json({ isFollowing: followStatus[clubId] || false });
 });
 
-// Get activity details API
 app.get('/api/activities/:id', (req, res) => {
   const activityId = parseInt(req.params.id);
   let activity = null;
   
-  // Search for activity in all clubs
   for (const clubId in activities) {
     activity = activities[clubId].find(a => a.id === activityId);
     if (activity) break;
@@ -252,13 +296,7 @@ app.get('/api/activities/:id', (req, res) => {
   res.json(activity);
 });
 
-// 根路径重定向到默认社团
-app.get('/', (req, res) => {
-  res.redirect('/club/1');
-});
-
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-
 });
