@@ -62,7 +62,7 @@ const clubs = {
     id: 3,
     name: 'Environmental Awareness Group',
     description: 'Promoting sustainability and environmental consciousness on campus.',
-    logo: 'https://images.unsplash.com/photo-1569163139394-de4e4f43e4e3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
+    logo: 'https://www.orchidsinternationalschool.com/_next/image?url=https%3A%2F%2Fcdn-cms.orchidsinternationalschool.com%2Fmedia%2Fblog%2Fenvironmental-protection%20(1).jpg&w=1920&q=75',
     followers: 156,
     activities: 6,
     members: 28,
@@ -141,7 +141,7 @@ const activities = {
       title: 'Campus Clean-up Day',
       date: 'April 10, 2025',
       location: 'Main Campus',
-      image: 'https://images.unsplash.com/photo-1569163139394-de4e4f43e4e3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7A7LVIhVVtPm-PZRYqZZ1HHrF413uHZXJ9Q&s',
       description: 'Join us for our quarterly campus clean-up event. Gloves and bags provided. All volunteers receive a free eco-friendly water bottle!'
     }
   ],
@@ -374,3 +374,4 @@ app.get('/api/activities/:id', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
