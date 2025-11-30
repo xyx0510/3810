@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .activity-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .activity-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .activity-card h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+
+        .activity-card p {
+            color: #666;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+
+        .activity-details {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn:hover {
+            background: #5a6fd8;
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal h2 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .requirements {
+            background: #e7f3ff;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            color: #ffc107;
+            font-weight: 600;
+        }
+
+        .status-approved {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        .payment-status {
+            display: inline-block;
+            padding: 0.3rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .payment-status.paid {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .payment-status.unpaid {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1rem;
+            color: #666;
+            border-top: 1px solid #ddd;
+        }
+
+        .search-box {
+            margin-bottom: 1.5rem;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .countdown {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #667eea;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border: 1px solid white;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background: white;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Activity Registration System</h1>
+            <p class="subtitle">Register for exciting events and manage your participation</p>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/my-registrations">My Registrations</a>
+                <a href="/checkin">Check In</a>
+            </div>
+        </header>
+
+        <div id="alert-container"></div>
+
+        <div class="dashboard">
+            <div class="card">
+                <h2>Find Your Registration</h2>
+                <div class="search-box">
+                    <input type="text" id="student-id-search" placeholder="Enter your Student ID to view registrations">
+                </div>
+                <button class="btn" onclick="loadStudentRegistrations()">Search</button>
+            </div>
+            
+            <div class="card">
+                <h2>Quick Stats</h2>
+                <p>Total Activities: <span id="total-activities"><%= totalActivities %></span></p>
+                <p>Your Registrations: <span id="total-registrations">0</span></p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Available Activities</h2>
+            <div class="activity-grid" id="activities-container">
+                <!-- Activities will be loaded here by JavaScript -->
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Your Registrations</h2>
+            <table id="registrations-table">
+                <thead>
+                    <tr>
+                        <th>Activity</th>
+                        <th>Name</th>
+                        <th>Student ID</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Payment</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="registrations-body">
+                    <!-- Registrations will be loaded here by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Registration Modal -->
+        <div class="modal" id="registration-modal">
+            <div class="modal-content">
+                <h2 id="modal-title">Register for Activity</h2>
+                <div id="requirements" class="requirements"></div>
+                <form id="registration-form">
+                    <input type="hidden" id="activity-id">
+                    <div class="form-group">
+                        <label for="name">Full Name *</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="student-id">Student ID *</label>
+                        <input type="text" id="student-id" name="studentId" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number *</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success">Submit Registration</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Edit Registration Modal -->
+        <div class="modal" id="edit-modal">
+            <div class="modal-content">
+                <h2>Edit Registration</h2>
+                <form id="edit-form">
+                    <input type="hidden" id="edit-registration-id">
+                    <div class="form-group">
+                        <label for="edit-name">Full Name *</label>
+                        <input type="text" id="edit-name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-phone">Phone Number *</label>
+                        <input type="tel" id="edit-phone" name="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-email">Email Address *</label>
+                        <input type="email" id="edit-email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success">Update Registration</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Payment Redirect Modal -->
+        <div class="modal" id="payment-redirect-modal">
+            <div class="modal-content">
+                <h2>Payment Required</h2>
+                <div class="alert alert-warning">
+                    <p>This activity requires payment to complete your registration.</p>
+                    <p><strong>Amount: $<span id="payment-amount">0</span></strong></p>
+                </div>
+                <div class="countdown" id="countdown">
+                    Redirecting to payment page in 5 seconds...
+                </div>
+                <div class="form-group" style="text-align: center;">
+                    <button class="btn btn-success" onclick="redirectToPayment()">Go to Payment Now</button>
+                    <button class="btn btn-secondary" onclick="closePaymentRedirectModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Activity Registration System &copy; 2024</p>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let activities = [];
+        let registrations = [];
+        let currentStudentId = '';
+        let pendingPaymentRegistration = null;
+        let countdownInterval = null;
+        let countdownValue = 5;
+
+        // DOM elements
+        const activitiesContainer = document.getElementById('activities-container');
+        const registrationsBody = document.getElementById('registrations-body');
+        const registrationModal = document.getElementById('registration-modal');
+        const editModal = document.getElementById('edit-modal');
+        const paymentRedirectModal = document.getElementById('payment-redirect-modal');
+        const alertContainer = document.getElementById('alert-container');
+        const totalActivitiesElement = document.getElementById('total-activities');
+        const totalRegistrationsElement = document.getElementById('total-registrations');
+        const paymentAmountElement = document.getElementById('payment-amount');
+        const countdownElement = document.getElementById('countdown');
+
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', function() {
+            loadActivities();
+            
+            // Add event listener for Enter key in search box
+            document.getElementById('student-id-search').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    loadStudentRegistrations();
+                }
+            });
+        });
+
+        // Load activities from API
+        async function loadActivities() {
+            try {
+                const response = await fetch('/api/activities');
+                const result = await response.json();
+                
+                if (result.success) {
+                    activities = result.data;
+                    renderActivities();
+                    totalActivitiesElement.textContent = activities.length;
+                } else {
+                    showAlert('Error loading activities', 'danger');
+                }
+            } catch (error) {
+                showAlert('Error loading activities: ' + error.message, 'danger');
+            }
+        }
+
+        // Load registrations for a specific student
+        async function loadStudentRegistrations() {
+            const studentId = document.getElementById('student-id-search').value.trim();
+            
+            if (!studentId) {
+                showAlert('Please enter a Student ID', 'danger');
+                return;
+            }
+            
+            currentStudentId = studentId;
+            
+            try {
+                const response = await fetch(`/api/registrations/student/${studentId}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    registrations = result.data;
+                    renderRegistrations();
+                    totalRegistrationsElement.textContent = registrations.length;
+                } else {
+                    showAlert('Error loading registrations', 'danger');
+                }
+            } catch (error) {
+                showAlert('Error loading registrations: ' + error.message, 'danger');
+            }
+        }
+
+        // Render activities to the page
+        function renderActivities() {
+            activitiesContainer.innerHTML = '';
+            
+            if (activities.length === 0) {
+                activitiesContainer.innerHTML = '<p>No activities available at the moment.</p>';
+                return;
+            }
+            
+            activities.forEach(activity => {
+                const activityCard = document.createElement('div');
+                activityCard.className = 'activity-card';
+                
+                activityCard.innerHTML = `
+                    <h3>${activity.name}</h3>
+                    <p>${activity.description}</p>
+                    <div class="activity-details">
+                        <p><strong>Date:</strong> ${activity.date} at ${activity.time}</p>
+                        <p><strong>Location:</strong> ${activity.location}</p>
+                        <p><strong>Fee:</strong> ${activity.registrationForm.feeRequired ? '$' + activity.registrationForm.feeAmount : 'Free'}</p>
+                        <p><strong>Requirements:</strong> ${activity.registrationForm.requirements}</p>
+                    </div>
+                    <button class="btn" onclick="checkEligibility(${activity.id})">Register Now</button>
+                `;
+                
+                activitiesContainer.appendChild(activityCard);
+            });
+        }
+
+        // Render registrations to the page
+        function renderRegistrations() {
+            registrationsBody.innerHTML = '';
+            
+            if (registrations.length === 0) {
+                registrationsBody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center;">No registrations found for this Student ID</td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            registrations.forEach(registration => {
+                const activity = activities.find(a => a.id === registration.activityId) || { name: 'Unknown Activity' };
+                const activityFee = activities.find(a => a.id === registration.activityId)?.registrationForm?.feeAmount || 0;
+                const requiresPayment = activities.find(a => a.id === registration.activityId)?.registrationForm?.feeRequired || false;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${activity.name}</td>
+                    <td>${registration.name}</td>
+                    <td>${registration.studentId}</td>
+                    <td>${registration.phone}</td>
+                    <td>${registration.email}</td>
+                    <td class="status-${registration.status}">${registration.status.charAt(0).toUpperCase() + registration.status.slice(1)}</td>
+                    <td>
+                        ${requiresPayment ? 
+                            (registration.paid ? 
+                                '<span class="payment-status paid">Paid</span>' : 
+                                '<span class="payment-status unpaid">Unpaid</span>') : 
+                            '<span>Free</span>'}
+                    </td>
+                    <td>
+                        ${registration.status === 'pending' ? 
+                            `<button class="btn" onclick="openEditModal(${registration.id})">Edit</button>
+                             ${requiresPayment && !registration.paid ? `<button class="btn btn-warning" onclick="redirectToPaymentPage(${registration.id})">Pay Now</button>` : ''}
+                             <button class="btn btn-danger" onclick="cancelRegistration(${registration.id})">Cancel</button>` : 
+                            'No actions available'}
+                    </td>
+                `;
+                
+                registrationsBody.appendChild(row);
+            });
+        }
+
+        // Check eligibility before registration
+        async function checkEligibility(activityId) {
+            const studentId = prompt('Please enter your Student ID to check eligibility:');
+            
+            if (!studentId) return;
+            
+            try {
+                const response = await fetch(`/api/activities/${activityId}/check-eligibility?studentId=${studentId}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    if (result.eligible) {
+                        openRegistrationModal(activityId, studentId);
+                    } else {
+                        showAlert(`You are already registered for this activity. Registration ID: ${result.registrationId}`, 'info');
+                    }
+                } else {
+                    showAlert('Error checking eligibility: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                showAlert('Error checking eligibility: ' + error.message, 'danger');
+            }
+        }
+
+        // Open registration modal
+        function openRegistrationModal(activityId, studentId = '') {
+            const activity = activities.find(a => a.id === activityId);
+            
+            if (!activity) {
+                showAlert('Activity not found', 'danger');
+                return;
+            }
+            
+            document.getElementById('modal-title').textContent = `Register for ${activity.name}`;
+            document.getElementById('activity-id').value = activityId;
+            document.getElementById('student-id').value = studentId;
+            
+            const requirementsDiv = document.getElementById('requirements');
+            requirementsDiv.innerHTML = `
+                <h3>Registration Requirements</h3>
+                <p>${activity.registrationForm.requirements}</p>
+                <p><strong>Fee:</strong> ${activity.registrationForm.feeRequired ? '$' + activity.registrationForm.feeAmount : 'Free'}</p>
+            `;
+            
+            registrationModal.style.display = 'flex';
+        }
+
+        // Close registration modal
+        function closeModal() {
+            registrationModal.style.display = 'none';
+            document.getElementById('registration-form').reset();
+        }
+
+        // Open edit modal
+        function openEditModal(registrationId) {
+            const registration = registrations.find(r => r.id === registrationId);
+            
+            if (!registration) {
+                showAlert('Registration not found', 'danger');
+                return;
+            }
+            
+            document.getElementById('edit-registration-id').value = registration.id;
+            document.getElementById('edit-name').value = registration.name;
+            document.getElementById('edit-phone').value = registration.phone;
+            document.getElementById('edit-email').value = registration.email;
+            
+            editModal.style.display = 'flex';
+        }
+
+        // Close edit modal
+        function closeEditModal() {
+            editModal.style.display = 'none';
+            document.getElementById('edit-form').reset();
+        }
+
+        // Submit registration form
+        document.getElementById('registration-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const activityId = document.getElementById('activity-id').value;
+            const formData = {
+                name: document.getElementById('name').value,
+                studentId: document.getElementById('student-id').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value
+            };
+            
+            try {
+                const response = await fetch(`/api/activities/${activityId}/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('Registration submitted successfully!', 'success');
+                    closeModal();
+                    
+                    if (result.requiresPayment) {
+                        // Store the registration that requires payment
+                        pendingPaymentRegistration = result.data;
+                        pendingPaymentRegistration.paymentAmount = result.paymentAmount;
+                        
+                        // Show payment redirect modal
+                        showPaymentRedirectModal(result.paymentAmount);
+                    }
+                    
+                    // Reload registrations if we have a current student ID
+                    if (currentStudentId) {
+                        loadStudentRegistrations();
+                    }
+                } else {
+                    showAlert('Registration failed: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                showAlert('Error submitting registration: ' + error.message, 'danger');
+            }
+        });
+
+        // Show payment redirect modal
+        function showPaymentRedirectModal(amount) {
+            paymentAmountElement.textContent = amount;
+            countdownValue = 5;
+            updateCountdown();
+            
+            paymentRedirectModal.style.display = 'flex';
+            
+            // Start countdown
+            countdownInterval = setInterval(function() {
+                countdownValue--;
+                updateCountdown();
+                
+                if (countdownValue <= 0) {
+                    clearInterval(countdownInterval);
+                    redirectToPayment();
+                }
+            }, 1000);
+        }
+
+        // Update countdown display
+        function updateCountdown() {
+            countdownElement.textContent = `Redirecting to payment page in ${countdownValue} seconds...`;
+        }
+
+        // Close payment redirect modal
+        function closePaymentRedirectModal() {
+            paymentRedirectModal.style.display = 'none';
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+        }
+
+        // Redirect to payment page
+        function redirectToPayment() {
+            closePaymentRedirectModal();
+            
+            if (pendingPaymentRegistration) {
+                // Store registration info in sessionStorage to use on payment page
+                sessionStorage.setItem('pendingPaymentRegistration', JSON.stringify(pendingPaymentRegistration));
+                
+                // Redirect to payment page
+                window.location.href = '/payment';
+            }
+        }
+
+        // Redirect to payment page for existing registration
+        function redirectToPaymentPage(registrationId) {
+            const registration = registrations.find(r => r.id === registrationId);
+            const activity = activities.find(a => a.id === registration.activityId);
+            
+            if (registration && activity) {
+                pendingPaymentRegistration = registration;
+                pendingPaymentRegistration.paymentAmount = activity.registrationForm.feeAmount;
+                
+                // Store registration info in sessionStorage to use on payment page
+                sessionStorage.setItem('pendingPaymentRegistration', JSON.stringify(pendingPaymentRegistration));
+                
+                // Redirect to payment page
+                window.location.href = '/payment';
+            }
+        }
+
+        // Submit edit form
+        document.getElementById('edit-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const registrationId = document.getElementById('edit-registration-id').value;
+            const formData = {
+                name: document.getElementById('edit-name').value,
+                phone: document.getElementById('edit-phone').value,
+                email: document.getElementById('edit-email').value
+            };
+            
+            try {
+                const response = await fetch(`/api/registrations/${registrationId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('Registration updated successfully!', 'success');
+                    closeEditModal();
+                    
+                    // Reload registrations if we have a current student ID
+                    if (currentStudentId) {
+                        loadStudentRegistrations();
+                    }
+                } else {
+                    showAlert('Update failed: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                showAlert('Error updating registration: ' + error.message, 'danger');
+            }
+        });
+
+        // Cancel registration
+        async function cancelRegistration(registrationId) {
+            if (!confirm('Are you sure you want to cancel this registration?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/registrations/${registrationId}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('Registration cancelled successfully!', 'success');
+                    
+                    // Reload registrations if we have a current student ID
+                    if (currentStudentId) {
+                        loadStudentRegistrations();
+                    }
+                } else {
+                    showAlert('Cancellation failed: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                showAlert('Error cancelling registration: ' + error.message, 'danger');
+            }
+        }
+
+        // Show alert message
+        function showAlert(message, type) {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            
+            alertContainer.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+
+        // Close modals when clicking outside
+        window.addEventListener('click', function(e) {
+            if (e.target === registrationModal) {
+                closeModal();
+            }
+            if (e.target === editModal) {
+                closeEditModal();
+            }
+            if (e.target === paymentRedirectModal) {
+                closePaymentRedirectModal();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 1rem;
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border: 1px solid white;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .activity-selector {
+            margin-bottom: 20px;
+        }
+
+        .activity-selector select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            background: white;
+        }
+
+        .checkin-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .method-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .method-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .qr-scanner {
+            width: 100%;
+            max-width: 300px;
+            height: 300px;
+            background: #f0f0f0;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            border: 2px dashed #ccc;
+        }
+        
+        .checkin-code-form {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .checkin-code-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .checkin-history {
+            margin-top: 30px;
+        }
+        
+        .checkin-record {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .makeup-request {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff3cd;
+            border-radius: 5px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #5a6fd8;
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-primary {
+            background: #007bff;
+        }
+
+        .btn-primary:hover {
+            background: #0069d9;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1rem;
+            color: #666;
+            border-top: 1px solid #ddd;
+        }
+
+        .no-activities {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .activity-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .activity-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .activity-card.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .activity-card h3 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .activity-card p {
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .activity-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Check In</h1>
+            <p class="subtitle">Check in for your registered activities</p>
+            <a href="/my-registrations" class="back-btn">← Back to My Registrations</a>
+        </header>
+
+        <div id="alert-container"></div>
+
+        <!-- 活动选择区域 -->
+        <div class="method-card" id="activity-selector">
+            <h2>Select Activity</h2>
+            <p>Choose an activity to check in for:</p>
+            <div id="activities-list">
+                <!-- 活动列表将通过JS动态加载 -->
+            </div>
+        </div>
+
+        <!-- 签到界面（初始隐藏） -->
+        <div id="checkin-interface" style="display: none;">
+            <div id="activity-info">
+                <!-- 活动信息将通过JS动态加载 -->
+            </div>
+
+            <div class="checkin-methods">
+                <!-- QR码签到 -->
+                <div class="method-card">
+                    <div class="method-icon">📷</div>
+                    <h3>QR Code Check-in</h3>
+                    <p>Scan the QR code at the event location</p>
+                    <div class="qr-scanner" id="qr-scanner">
+                        <div id="scanner-placeholder">
+                            <p>QR Scanner Placeholder</p>
+                            <p>In a real app, this would be a camera view</p>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 15px;">
+                        <button class="btn btn-primary" onclick="simulateQRScan()">Simulate QR Scan</button>
+                    </div>
+                </div>
+                
+                <!-- 签到码签到 -->
+                <div class="method-card">
+                    <div class="method-icon">🔢</div>
+                    <h3>Check-in Code</h3>
+                    <p>Enter the check-in code provided at the event</p>
+                    <div class="checkin-code-form">
+                        <input type="text" class="checkin-code-input" id="checkin-code" placeholder="Enter check-in code">
+                        <button class="btn btn-primary" onclick="submitCheckinCode()">Check In</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 签到状态 -->
+            <div class="method-card" id="checkin-status" style="display: none;">
+                <h3>Check-in Status</h3>
+                <div id="checkin-status-content"></div>
+            </div>
+
+            <!-- 补签申请 -->
+            <div class="makeup-request" id="makeup-section" style="display: none;">
+                <h3>Missed the Event?</h3>
+                <p>If you missed the event but have a valid reason, you can apply for a makeup check-in.</p>
+                <form id="makeup-form">
+                    <div class="form-group">
+                        <label for="makeup-reason">Reason for makeup check-in:</label>
+                        <textarea id="makeup-reason" rows="3" placeholder="Please explain why you missed the event"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-warning">Apply for Makeup Check-in</button>
+                </form>
+            </div>
+
+            <!-- 返回活动选择按钮 -->
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn btn-secondary" onclick="backToActivitySelection()">← Select Different Activity</button>
+            </div>
+        </div>
+
+        <!-- 签到历史 -->
+        <div class="checkin-history">
+            <h2>My Check-in History</h2>
+            <div id="checkin-history-list">
+                <!-- 签到历史将通过JS动态加载 -->
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Activity Registration System &copy; 2024</p>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let currentStudentId = '';
+        let currentActivityId = null;
+        let activityInfo = null;
+        let userActivities = [];
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取URL参数
+            const urlParams = new URLSearchParams(window.location.search);
+            currentActivityId = urlParams.get('activityId');
+            
+            // 获取学生ID
+            currentStudentId = prompt('Please enter your Student ID:');
+            if (!currentStudentId) {
+                alert('Student ID is required for check-in');
+                window.location.href = '/my-registrations';
+                return;
+            }
+            
+            // 加载用户的活动列表
+            loadUserActivities();
+            loadCheckinHistory();
+            setupEventListeners();
+            
+            // 如果URL中有activityId，直接显示签到界面
+            if (currentActivityId) {
+                selectActivity(currentActivityId);
+            }
+        });
+
+        // 设置事件监听器
+        function setupEventListeners() {
+            // 补签表单提交
+            document.getElementById('makeup-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                submitMakeupRequest();
+            });
+            
+            // 回车键提交签到码
+            document.getElementById('checkin-code').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    submitCheckinCode();
+                }
+            });
+        }
+
+        // 加载用户的活动列表
+        async function loadUserActivities() {
+            try {
+                const response = await fetch(`/api/user/registrations?studentId=${currentStudentId}&status=approved`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    userActivities = result.data;
+                    displayUserActivities();
+                } else {
+                    showAlert('Error loading your activities: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                showAlert('Error loading your activities: ' + error.message, 'danger');
+            }
+        }
+
+        // 显示用户的活动列表
+        function displayUserActivities() {
+            const container = document.getElementById('activities-list');
+            
+            if (userActivities.length === 0) {
+                container.innerHTML = '<div class="no-activities">No approved activities found. Please register for activities first.</div>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            userActivities.forEach(activity => {
+                const card = document.createElement('div');
+                card.className = 'activity-card';
+                if (activity.id === currentActivityId) {
+                    card.classList.add('selected');
+                }
+                
+                card.innerHTML = `
+                    <h3>${activity.activity.name}</h3>
+                    <p>${activity.activity.description}</p>
+                    <div class="activity-meta">
+                        <span>${activity.activity.date} at ${activity.activity.time}</span>
+                        <span>${activity.activity.location}</span>
+                    </div>
+                    ${activity.checkin ? 
+                        '<div style="color: green; margin-top: 10px;">✓ Already checked in</div>' : 
+                        '<div style="color: orange; margin-top: 10px;">Not checked in yet</div>'
+                    }
+                `;
+                
+                card.onclick = () => selectActivity(activity.id);
+                
+                container.appendChild(card);
+            });
+        }
+
+        // 选择活动
+        async function selectActivity(activityId) {
+            currentActivityId = activityId;
+            
+            // 更新活动卡片选中状态
+            document.querySelectorAll('.activity-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // 显示加载状态
+            document.getElementById('activity-selector').style.display = 'none';
+            document.getElementById('checkin-interface').style.display = 'block';
+            document.getElementById('activity-info').innerHTML = '<div class="loading">Loading activity information...</div>';
+            
+            // 加载活动信息
+            await loadActivityInfo();
+            
+            // 加载签到状态
+            await loadCheckinStatus();
+            
+            // 重新显示活动列表中的选中状态
+            document.querySelectorAll('.activity-card').forEach(card => {
+                if (card.querySelector('h3').textContent === activityInfo.name) {
+                    card.classList.add('selected');
+                }
+            });
+        }
+
+        // 返回活动选择
+        function backToActivitySelection() {
+            document.getElementById('activity-selector').style.display = 'block';
+            document.getElementById('checkin-interface').style.display = 'none';
+            currentActivityId = null;
+            
+            // 重置选中状态
+            document.querySelectorAll('.activity-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+        }
+
+        // 加载活动信息
+        async function loadActivityInfo() {
+            try {
+                const response = await fetch(`/api/activities/${currentActivityId}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    activityInfo = result.data;
+                    displayActivityInfo();
+                } else {
+                    showAlert('Error loading activity information: ' + result.message, 'danger');
+                    backToActivitySelection();
+                }
+            } catch (error) {
+                showAlert('Error loading activity information: ' + error.message, 'danger');
+                backToActivitySelection();
+            }
+        }
+
+        // 显示活动信息
+        function displayActivityInfo() {
+            const container = document.getElementById('activity-info');
+            
+            container.innerHTML = `
+                <div class="method-card">
+                    <h2>${activityInfo.name}</h2>
+                    <p><strong>Date & Time:</strong> ${activityInfo.date} at ${activityInfo.time}</p>
+                    <p><strong>Location:</strong> ${activityInfo.location}</p>
+                    <p>${activityInfo.description}</p>
+                </div>
+            `;
+        }
+
+        // 加载签到状态
+        async function loadCheckinStatus() {
+            try {
+                const response = await fetch(`/api/activities/${currentActivityId}/checkin-status?studentId=${currentStudentId}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayCheckinStatus(result.data);
+                } else {
+                    showAlert('Error loading check-in status: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                showAlert('Error loading check-in status: ' + error.message, 'danger');
+            }
+        }
+
+        // 显示签到状态
+        function displayCheckinStatus(status) {
+            const container = document.getElementById('checkin-status');
+            const content = document.getElementById('checkin-status-content');
+            
+            if (status.checkedIn) {
+                content.innerHTML = `
+                    <div style="color: green; font-weight: bold;">
+                        ✓ You have already checked in for this activity
+                    </div>
+                    <p><strong>Check-in Time:</strong> ${new Date(status.checkinTime).toLocaleString()}</p>
+                    <p><strong>Method:</strong> ${status.method}</p>
+                `;
+                
+                // 隐藏签到方法，因为已经签到过了
+                document.querySelector('.checkin-methods').style.display = 'none';
+            } else {
+                content.innerHTML = `
+                    <div style="color: orange; font-weight: bold;">
+                        You haven't checked in for this activity yet
+                    </div>
+                `;
+                
+                // 显示签到方法
+                document.querySelector('.checkin-methods').style.display = 'flex';
+                
+                // 显示补签申请部分（如果是过去的活动）
+                const eventDate = new Date(activityInfo.date);
+                const today = new Date();
+                
+                if (eventDate < today) {
+                    document.getElementById('makeup-section').style.display = 'block';
+                } else {
+                    document.getElementById('makeup-section').style.display = 'none';
+                }
+            }
+            
+            container.style.display = 'block';
+        }
+
+        // 模拟QR码扫描
+        function simulateQRScan() {
+            if (!currentActivityId) {
+                showAlert('Please select an activity first', 'danger');
+                return;
+            }
+            
+            // 在实际应用中，这里会使用摄像头扫描QR码
+            // 这里我们模拟扫描到正确的QR码
+            const qrCode = activityInfo.qrCode;
+            
+            processQRCheckin(qrCode);
+        }
+
+        // 处理QR码签到
+        async function processQRCheckin(qrCode) {
+            try {
+                const response = await fetch('/api/checkin/qrcode', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        studentId: currentStudentId,
+                        qrCode: qrCode
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('Check-in successful!', 'success');
+                    loadCheckinStatus();
+                    loadCheckinHistory();
+                    
+                    // 刷新活动列表以更新签到状态
+                    loadUserActivities();
+                } else {
+                    showAlert('Check-in failed: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                showAlert('Error during check-in: ' + error.message, 'danger');
+            }
+        }
+
+        // 提交签到码
+        async function submitCheckinCode() {
+            if (!currentActivityId) {
+                showAlert('Please select an activity first', 'danger');
+                return;
+            }
+            
+            const checkinCode = document.getElementById('checkin-code').value.trim();
+            
+            if (!checkinCode) {
+                showAlert('Please enter a check-in code', 'danger');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/checkin/code', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        studentId: currentStudentId,
+                        activityId: currentActivityId,
+                        checkinCode: checkinCode
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('Check-in successful!', 'success');
+                    document.getElementById('checkin-code').value = '';
+                    loadCheckinStatus();
+                    loadCheckinHistory();
+                    
+                    // 刷新活动列表以更新签到状态
+                    loadUserActivities();
+                } else {
+                    showAlert('Check-in failed: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                showAlert('Error during check-in: ' + error.message, 'danger');
+            }
+        }
+
+        // 加载签到历史
+        async function loadCheckinHistory() {
+            try {
+                const response = await fetch(`/api/user/checkins?studentId=${currentStudentId}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayCheckinHistory(result.data);
+                } else {
+                    showAlert('Error loading check-in history: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                showAlert('Error loading check-in history: ' + error.message, 'danger');
+            }
+        }
+
+        // 显示签到历史
+        function displayCheckinHistory(checkins) {
+            const container = document.getElementById('checkin-history-list');
+            
+            if (checkins.length === 0) {
+                container.innerHTML = '<p>No check-in history found</p>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            checkins.forEach(checkin => {
+                const record = document.createElement('div');
+                record.className = 'checkin-record';
+                
+                record.innerHTML = `
+                    <div><strong>${checkin.activity.name}</strong></div>
+                    <div>${new Date(checkin.checkinTime).toLocaleString()}</div>
+                    <div>Method: ${checkin.method} • Status: ${checkin.status}</div>
+                `;
+                
+                container.appendChild(record);
+            });
+        }
+
+        // 提交补签申请
+        async function submitMakeupRequest() {
+            if (!currentActivityId) {
+                showAlert('Please select an activity first', 'danger');
+                return;
+            }
+            
+            const reason = document.getElementById('makeup-reason').value.trim();
+            
+            if (!reason) {
+                showAlert('Please provide a reason for the makeup check-in', 'danger');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/checkin/makeup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        studentId: currentStudentId,
+                        activityId: currentActivityId,
+                        reason: reason
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('Makeup check-in request submitted successfully!', 'success');
+                    document.getElementById('makeup-reason').value = '';
+                    document.getElementById('makeup-section').style.display = 'none';
+                    loadCheckinHistory();
+                    
+                    // 刷新活动列表以更新签到状态
+                    loadUserActivities();
+                } else {
+                    showAlert('Makeup check-in request failed: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                showAlert('Error submitting makeup request: ' + error.message, 'danger');
+            }
+        }
+
+        // 显示提示消息
+        function showAlert(message, type) {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            
+            alertContainer.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
