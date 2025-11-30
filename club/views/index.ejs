@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= club.name %> - Club Homepage</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .club-header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .club-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(30deg);
+        }
+        
+        .club-info {
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .club-logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            margin-right: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .club-details {
+            flex: 1;
+        }
+        
+        .club-name {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .club-description {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 15px;
+            max-width: 600px;
+        }
+        
+        .club-stats {
+            display: flex;
+            gap: 25px;
+            margin-top: 15px;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .follow-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+        }
+        
+        .follow-btn:hover {
+            background: white;
+            color: #6a11cb;
+        }
+        
+        .followed {
+            background: white;
+            color: #6a11cb;
+        }
+        
+        .tabs {
+            display: flex;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-align: center;
+            flex: 1;
+        }
+        
+        .tab.active {
+            background: #6a11cb;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .activities-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .activity-card {
+            background: #f9f9f9;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .activity-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .activity-image {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+        
+        .activity-details {
+            padding: 15px;
+        }
+        
+        .activity-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .activity-date, .activity-location {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .members-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .member-card {
+            text-align: center;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .member-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .member-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 15px;
+            border: 3px solid #6a11cb;
+        }
+        
+        .member-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .member-role {
+            color: #6a11cb;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .club-intro {
+            line-height: 1.8;
+        }
+        
+        .club-intro p {
+            margin-bottom: 15px;
+        }
+        
+        .section-title {
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: #333;
+            border-left: 4px solid #6a11cb;
+            padding-left: 10px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+        }
+        
+        .error {
+            text-align: center;
+            padding: 30px;
+            color: #e74c3c;
+            background: #ffeaea;
+            border-radius: 10px;
+        }
+        
+        /* Activity Modal Styles */
+        .activity-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #666;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.8);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .close-btn:hover {
+            color: #333;
+            background: white;
+        }
+        
+        .modal-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+        
+        .modal-details {
+            padding: 25px;
+        }
+        
+        .modal-details h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        
+        .activity-info {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #666;
+        }
+        
+        .info-item i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        .activity-description h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .activity-description p {
+            line-height: 1.6;
+            color: #555;
+        }
+        
+        .activity-actions {
+            margin-top: 25px;
+            text-align: center;
+        }
+        
+        .join-btn {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .join-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.4);
+        }
+        
+        @media (max-width: 768px) {
+            .club-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .club-logo {
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+            
+            .club-stats {
+                justify-content: center;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .activities-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .members-list {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="club-header">
+            <div class="club-info">
+                <img src="<%= club.logo %>" alt="<%= club.name %> Logo" class="club-logo" id="club-logo">
+                <div class="club-details">
+                    <h1 class="club-name" id="club-name"><%= club.name %></h1>
+                    <p class="club-description" id="club-description"><%= club.description %></p>
+                    <div class="club-stats">
+                        <div class="stat">
+                            <div class="stat-value" id="fans-count"><%= club.followers %></div>
+                            <div class="stat-label">Followers</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="activities-count"><%= club.activities %></div>
+                            <div class="stat-label">Activities</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="members-count"><%= club.members %></div>
+                            <div class="stat-label">Members</div>
+                        </div>
+                    </div>
+                    <button class="follow-btn <%= isFollowing ? 'followed' : '' %>" id="follow-btn">
+                        <i class="<%= isFollowing ? 'fas' : 'far' %> fa-heart"></i> 
+                        <%= isFollowing ? 'Following' : 'Follow' %>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="activities">Activities</div>
+            <div class="tab" data-tab="introduction">Introduction</div>
+            <div class="tab" data-tab="members">Members</div>
+        </div>
+        
+        <div class="tab-content active" id="activities-content">
+            <h2 class="section-title">Club Activities</h2>
+            <div class="activities-list" id="activities-list">
+                <% activities.forEach(activity => { %>
+                    <div class="activity-card" data-activity-id="<%= activity.id %>">
+                        <img src="<%= activity.image %>" alt="<%= activity.title %>" class="activity-image">
+                        <div class="activity-details">
+                            <h3 class="activity-title"><%= activity.title %></h3>
+                            <div class="activity-date">
+                                <i class="far fa-calendar"></i>
+                                <%= activity.date %>
+                            </div>
+                            <div class="activity-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <%= activity.location %>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="introduction-content">
+            <h2 class="section-title">About Our Club</h2>
+            <div class="club-intro" id="club-intro">
+                <p><%= club.detailedDescription %></p>
+                <p><strong>Established:</strong> <%= club.established %></p>
+                <p><strong>Meeting Time:</strong> <%= club.meetingTime %></p>
+                <p><strong>Location:</strong> <%= club.location %></p>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="members-content">
+            <h2 class="section-title">Club Members</h2>
+            <div class="members-list" id="members-list">
+                <% members.forEach(member => { %>
+                    <div class="member-card">
+                        <img src="<%= member.avatar %>" alt="<%= member.name %>" class="member-avatar">
+                        <h3 class="member-name"><%= member.name %></h3>
+                        <p class="member-role"><%= member.role %></p>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const followBtn = document.getElementById('follow-btn');
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const activityCards = document.querySelectorAll('.activity-card');
+        
+        // State variables
+        let clubId = <%= club.id %>;
+        let isFollowing = <%= isFollowing %>;
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up tab switching
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    
+                    // Update active tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // Show corresponding content
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === `${tabId}-content`) {
+                            content.classList.add('active');
+                        }
+                    });
+                });
+            });
+            
+            // Set up follow button
+            followBtn.addEventListener('click', toggleFollow);
+            
+            // Set up activity card clicks
+            activityCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const activityId = card.getAttribute('data-activity-id');
+                    showActivityDetail(activityId);
+                });
+            });
+        });
+        
+        // Toggle follow status
+        async function toggleFollow() {
+            try {
+                if (isFollowing) {
+                    // Unfollow
+                    await fetch(`/api/clubs/${clubId}/follow`, { method: 'DELETE' });
+                    isFollowing = false;
+                    updateFollowButton();
+                    updateFollowerCount(-1);
+                } else {
+                    // Follow
+                    await fetch(`/api/clubs/${clubId}/follow`, { method: 'POST' });
+                    isFollowing = true;
+                    updateFollowButton();
+                    updateFollowerCount(1);
+                }
+            } catch (error) {
+                console.error('Failed to toggle follow status:', error);
+            }
+        }
+        
+        // Update follow button appearance
+        function updateFollowButton() {
+            if (isFollowing) {
+                followBtn.innerHTML = '<i class="fas fa-heart"></i> Following';
+                followBtn.classList.add('followed');
+            } else {
+                followBtn.innerHTML = '<i class="far fa-heart"></i> Follow';
+                followBtn.classList.remove('followed');
+            }
+        }
+        
+        // Update follower count
+        function updateFollowerCount(change) {
+            const fansCount = document.getElementById('fans-count');
+            const currentCount = parseInt(fansCount.textContent);
+            fansCount.textContent = currentCount + change;
+        }
+        
+        // Show activity detail modal
+        async function showActivityDetail(activityId) {
+            try {
+                // Get full activity details from API
+                const response = await fetch(`/api/activities/${activityId}`);
+                const activity = await response.json();
+                
+                // Create modal
+                const modal = document.createElement('div');
+                modal.className = 'activity-modal';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <span class="close-btn">&times;</span>
+                        <img src="${activity.image}" alt="${activity.title}" class="modal-image">
+                        <div class="modal-details">
+                            <h2>${activity.title}</h2>
+                            <div class="activity-info">
+                                <div class="info-item">
+                                    <i class="far fa-calendar"></i>
+                                    <span>${activity.date}</span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>${activity.location}</span>
+                                </div>
+                            </div>
+                            <div class="activity-description">
+                                <h3>Activity Description</h3>
+                                <p>${activity.description}</p>
+                            </div>
+                            <div class="activity-actions">
+                                <button class="join-btn">Join Activity</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Add modal to page
+                document.body.appendChild(modal);
+                
+                // Close button event
+                const closeBtn = modal.querySelector('.close-btn');
+                closeBtn.addEventListener('click', () => {
+                    document.body.removeChild(modal);
+                });
+                
+                // Click outside modal to close
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        document.body.removeChild(modal);
+                    }
+                });
+                
+                // Join activity button event
+                const joinBtn = modal.querySelector('.join-btn');
+                joinBtn.addEventListener('click', () => {
+                    alert('You have successfully joined this activity!');
+                    document.body.removeChild(modal);
+                });
+                
+            } catch (error) {
+                console.error('Failed to load activity details:', error);
+                alert('Failed to load activity details. Please try again.');
+            }
+        }
+    </script>
+</body>
+</html>
