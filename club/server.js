@@ -17,7 +17,7 @@ const clubs = {
     id: 1,
     name: 'Tech Innovators Club',
     description: 'A community of technology enthusiasts exploring the latest innovations.',
-    logo: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
+    logo: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.linkedin.com%2Fcompany%2Ftech-innovators7&psig=AOvVaw2XDNMbyMKPYJUTEBjslz-l&ust=1764582108233000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCMCur-XKmZEDFQAAAAAdAAAAABAE',
     followers: 245,
     activities: 12,
     members: 48,
@@ -30,7 +30,7 @@ const clubs = {
     id: 2,
     name: 'Art & Design Society',
     description: 'Expressing creativity through various art forms and design thinking.',
-    logo: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
+    logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOLA5LFJiFWAY9FZzYX0rCe1_nNsTYg59Rig&s',
     followers: 178,
     activities: 8,
     members: 32,
@@ -48,7 +48,7 @@ const activities = {
       title: 'AI Workshop: Introduction to Machine Learning',
       date: 'March 15, 2025',
       location: 'Computer Lab 3',
-      image: 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
+      image: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fanexas.net%2Fcourse%2Fintroduction-to-ai-and-machine-learning%2F&psig=AOvVaw0N7fH87EZXIwvjyQLBXo2X&ust=1764581735190000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCNCV_73JmZEDFQAAAAAdAAAAABAK',
       description: 'Join us for an interactive workshop on the basics of machine learning. We will cover topics such as linear regression, classification, and clustering. No prior experience required! This workshop is perfect for beginners who want to get started with AI and machine learning.'
     },
     {
@@ -56,7 +56,7 @@ const activities = {
       title: 'Hackathon 2025',
       date: 'April 5-6, 2025',
       location: 'Innovation Center',
-      image: 'https://images.unsplash.com/photo-1535223289827-42f1e9919769?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
+      image: 'https://img.freepik.com/free-vector/hackathon-doodle-hand-drawing-team-programmers-web-developers-managers-graphic-designers-deve_88138-1348.jpg?semt=ais_hybrid&w=740&q=80',
       description: '48-hour hackathon where you can build anything you want. Work in teams or solo to create innovative projects. Prizes for the top three projects! Food and drinks will be provided throughout the event.'
     },
     {
@@ -64,7 +64,7 @@ const activities = {
       title: 'Guest Speaker: Tech Industry Leader',
       date: 'February 20, 2025',
       location: 'Auditorium A',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
+      image: 'https://i0.wp.com/swisscognitive.ch/wp-content/uploads/2021/09/dalith_steiger_keynote_speaker_expert_in_artificial_intelligence_swisscognitive_portrait_2021_012.jpg?fit=1440%2C810&ssl=1',
       description: 'We have invited a renowned tech industry leader to share their insights and experiences. Learn about career opportunities, industry trends, and get valuable advice for your professional development. Open to all students.'
     }
   ],
@@ -74,7 +74,7 @@ const activities = {
       title: 'Watercolor Painting Workshop',
       date: 'March 22, 2025',
       location: 'Arts Center, Studio A',
-      image: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
+      image: 'https://cdn.shopify.com/s/files/1/0560/6477/0112/files/IMG_4128-S_480x480.jpg?v=1684139712',
       description: 'Learn the basics of watercolor painting in this hands-on workshop. All materials provided. No experience necessary!'
     },
     {
@@ -82,7 +82,7 @@ const activities = {
       title: 'Digital Art Exhibition',
       date: 'April 12-15, 2025',
       location: 'University Gallery',
-      image: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRS-oYUutvji2GLpFhOVZjWH3C3iWYWmnjbYQ&s',
       description: 'Showcase of digital artwork created by our members. Open to the public.'
     }
   ]
@@ -260,4 +260,5 @@ app.get('/', (req, res) => {
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+
 });
