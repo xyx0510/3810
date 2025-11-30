@@ -387,21 +387,6 @@
     </div>
 
     <script>
-        // 简单的分类图标映射
-        function getCategoryIcon(category) {
-            const iconMap = {
-                'Technology': 'laptop-code',
-                'Arts': 'palette',
-                'Environment': 'leaf',
-                'Business': 'chart-line',
-                'Sports': 'running',
-                'Science': 'flask',
-                'Music': 'music',
-                'Volunteer': 'hands-helping'
-            };
-            return iconMap[category] || 'users';
-        }
-        
         // 为所有分类卡片添加点击事件
         document.querySelectorAll('.category-card').forEach(card => {
             card.addEventListener('click', function() {
